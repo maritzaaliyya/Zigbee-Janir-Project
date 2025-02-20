@@ -1,0 +1,258 @@
+version 3
+run Ieee802154Power-0-20241203-20:18:34-49168
+attr configname Ieee802154Power
+attr datetime 20241203-20:18:34
+attr datetimef 20241203-201834
+attr experiment Ieee802154Power
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network ZigbeeNetwork
+attr processid 49168
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config image-path images:../inet-4.5.3/images
+config extends Ieee802154
+config sim-time-limit 100s
+config **.energyStorage.residualEnergyCapacity.result-recording-modes +last
+config network ZigbeeNetwork
+config **.arp.typename GlobalArp
+config **.netmaskRoutes "\"\""
+config *.radioMedium.backgroundNoise.power -110dBm
+config *.configurator.config "xmldoc(\"startopology.xml\")"
+config *.configurator.addStaticRoutes false
+config *.sensor*.numApps 1
+config *.sensor*.app[*].typename UdpBasicApp
+config *.sensor*.app[*].destAddresses "\"controller\""
+config *.sensor*.app[*].destPort 1000
+config *.sensor*.app[*].sendInterval 1s
+config *.sensor*.app[*].startTime uniform(0s,1s)
+config *.sensor*.app[*].messageLength 10Byte
+config *.sensor*.app[*].packetName "\"SensorData\""
+config *.controller.numApps 2
+config *.controller.app[0].typename SmartLampApp
+config *.controller.app[0].destAddresses "\"lamp1 lamp2 lamp3\""
+config *.controller.app[0].destPort 1000
+config *.controller.app[0].sendInterval 0.125s
+config *.controller.app[0].startTime exponential(1s)
+config *.controller.app[0].messageLength 10Byte
+config *.controller.app[0].packetName "\"ControlData\""
+config *.controller.app[0].controllerAddress "\"controller\""
+config *.controller.app[0].interfaceTableModule "\"controller.interfaceTable\""
+config *.controller.app[0].onOffCheckInterval 1s
+config *.controller.app[1].typename UdpSink
+config *.controller.app[1].localPort 1000
+config *.lamp*.numApps 1
+config *.lamp*.app[0].typename UdpSink
+config *.lamp*.app[0].localPort 1000
+config *.lamp*.controllerAddress "\"controller\""
+config *.visualizer.*.routingTableVisualizer[0].displayRoutingTables false
+config *.visualizer.*.routingTableVisualizer[0].displayRoutesIndividually false
+config *.visualizer.*.routingTableVisualizer[0].lineShift 0
+config *.visualizer.*.routingTableVisualizer[0].displayLabels false
+config *.visualizer.*.interfaceTableVisualizer[0].displayInterfaceTables false
+config *.visualizer.*.numDataLinkVisualizers 2
+config *.visualizer.*.dataLinkVisualizer[*].displayLinks true
+config *.visualizer.*.dataLinkVisualizer[0].nodeFilter "\"sensor* or controller\""
+config *.visualizer.*.dataLinkVisualizer[1].*Color "\"blue\""
+config *.visualizer.*.dataLinkVisualizer[1].nodeFilter "\"lamp* or controller\""
+config *.visualizer.*.numStatisticVisualizers 2
+config *.visualizer.*.statisticVisualizer[*].zIndex 1
+config *.visualizer.*.statisticVisualizer[0].displayStatistics true
+config *.visualizer.*.statisticVisualizer[0].signalName "\"packetSent\""
+config *.visualizer.*.statisticVisualizer[0].statisticExpression "\"count\""
+config *.visualizer.*.statisticVisualizer[0].sourceFilter "\"**.controller.udp OR **.sensor*.udp\""
+config *.visualizer.*.statisticVisualizer[0].format "\"sent: %v pks\""
+config *.visualizer.*.statisticVisualizer[1].displayStatistics true
+config *.visualizer.*.statisticVisualizer[1].signalName "\"packetReceived\""
+config *.visualizer.*.statisticVisualizer[1].statisticExpression "\"count\""
+config *.visualizer.*.statisticVisualizer[1].sourceFilter "\"**.controller.udp OR **.lamp*.udp\""
+config *.visualizer.*.statisticVisualizer[1].format "\"rcvd: %v pks\""
+
+vector 0 ZigbeeNetwork.sensor1.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 1 ZigbeeNetwork.sensor1.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 2 ZigbeeNetwork.sensor1.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 3 ZigbeeNetwork.sensor1.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 4 ZigbeeNetwork.sensor1.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 5 ZigbeeNetwork.lamp1.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 6 ZigbeeNetwork.lamp1.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 7 ZigbeeNetwork.lamp1.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 8 ZigbeeNetwork.lamp1.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 9 ZigbeeNetwork.lamp1.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 10 ZigbeeNetwork.lamp2.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 11 ZigbeeNetwork.lamp2.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 12 ZigbeeNetwork.lamp2.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 13 ZigbeeNetwork.lamp2.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 14 ZigbeeNetwork.lamp2.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 15 ZigbeeNetwork.lamp3.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 16 ZigbeeNetwork.lamp3.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 17 ZigbeeNetwork.lamp3.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 18 ZigbeeNetwork.lamp3.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 19 ZigbeeNetwork.lamp3.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 20 ZigbeeNetwork.controller.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 21 ZigbeeNetwork.controller.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 22 ZigbeeNetwork.controller.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 23 ZigbeeNetwork.controller.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 24 ZigbeeNetwork.controller.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 25 ZigbeeNetwork.controller.app[0].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 26 ZigbeeNetwork.controller.app[0].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 27 ZigbeeNetwork.controller.app[0].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 28 ZigbeeNetwork.sensor1.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 29 ZigbeeNetwork.lamp1.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 30 ZigbeeNetwork.lamp2.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 31 ZigbeeNetwork.lamp3.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powe

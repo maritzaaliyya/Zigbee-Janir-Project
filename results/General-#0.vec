@@ -1,0 +1,3566 @@
+version 3
+run General-0-20241025-00:10:01-21848
+attr configname General
+attr datetime 20241025-00:10:01
+attr datetimef 20241025-001001
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network ZigbeeNetwork
+attr processid 21848
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config image-path images:../inet-4.5.3/images
+config network ZigbeeNetwork
+config **.arp.typename GlobalArp
+config **.netmaskRoutes "\"\""
+config *.radioMedium.backgroundNoise.power -110dBm
+config *.configurator.config "xmldoc(\"startopology.xml\")"
+config *.configurator.addStaticRoutes false
+config *.sensor2.numApps 1
+config *.sensor2.app[0].typename TemperatureSensorApp
+config *.sensor2.app[0].destAddresses "\"ac\""
+config *.sensor2.app[0].destPort 1001
+config *.ac.numApps 1
+config *.ac.app[0].typename AirConditionerApp
+config *.ac.app[0].localPort 1001
+config *.ac.app[0].destPort 1001
+config *.ac.app[0].messageLength 10Byte
+config *.ac.app[0].sendInterval 1s
+config *.sensor*.numApps 1
+config *.sensor*.app[*].typename UdpBasicApp
+config *.sensor*.app[*].destAddresses "\"controller\""
+config *.sensor*.app[*].destPort 1000
+config *.sensor*.app[*].sendInterval 1s
+config *.sensor*.app[*].startTime uniform(0s,1s)
+config *.sensor*.app[*].messageLength 10Byte
+config *.sensor*.app[*].packetName "\"SensorData\""
+config *.controller.numApps 2
+config *.controller.app[0].typename UdpBasicApp
+config *.controller.app[0].destAddresses "\"lamp1 lamp2 lamp3\""
+config *.controller.app[0].destPort 1000
+config *.controller.app[0].sendInterval 0.125s
+config *.controller.app[0].startTime exponential(1s)
+config *.controller.app[0].messageLength 10Byte
+config *.controller.app[0].packetName "\"ControlData\""
+config *.controller.app[1].typename UdpSink
+config *.controller.app[1].localPort 1000
+config *.lamp*.numApps 1
+config *.lamp*.app[0].typename SmartLamp
+config *.lamp*.app[0].localPort 1000
+config *.visualizer.routingTableVisualizer[0].displayRoutingTables false
+config *.visualizer.routingTableVisualizer[0].displayRoutesIndividually false
+config *.visualizer.routingTableVisualizer[0].lineShift 0
+config *.visualizer.routingTableVisualizer[0].displayLabels false
+config *.visualizer.interfaceTableVisualizer[0].displayInterfaceTables false
+config *.visualizer.numDataLinkVisualizers 2
+config *.visualizer.dataLinkVisualizer[*].displayLinks true
+config *.visualizer.dataLinkVisualizer[0].nodeFilter "\"sensor* or controller\""
+config *.visualizer.dataLinkVisualizer[1].*Color "\"blue\""
+config *.visualizer.dataLinkVisualizer[1].nodeFilter "\"lamp* or controller\""
+config *.visualizer.numStatisticVisualizers 2
+config *.visualizer.statisticVisualizer[*].zIndex 1
+config *.visualizer.statisticVisualizer[0].displayStatistics true
+config *.visualizer.statisticVisualizer[0].signalName "\"packetSent\""
+config *.visualizer.statisticVisualizer[0].statisticExpression "\"count\""
+config *.visualizer.statisticVisualizer[0].sourceFilter "\"**.controller.udp OR **.sensor*.udp\""
+config *.visualizer.statisticVisualizer[0].format "\"sent: %v pks\""
+config *.visualizer.statisticVisualizer[1].displayStatistics true
+config *.visualizer.statisticVisualizer[1].signalName "\"packetReceived\""
+config *.visualizer.statisticVisualizer[1].statisticExpression "\"count\""
+config *.visualizer.statisticVisualizer[1].sourceFilter "\"**.controller.udp OR **.lamp*.udp\""
+config *.visualizer.statisticVisualizer[1].format "\"rcvd: %v pks\""
+
+vector 0 ZigbeeNetwork.ac.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 1 ZigbeeNetwork.ac.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 2 ZigbeeNetwork.ac.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 3 ZigbeeNetwork.ac.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 4 ZigbeeNetwork.ac.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 5 ZigbeeNetwork.sensor1.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 6 ZigbeeNetwork.sensor1.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 7 ZigbeeNetwork.sensor1.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 8 ZigbeeNetwork.sensor1.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 9 ZigbeeNetwork.sensor1.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 10 ZigbeeNetwork.sensor3.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 11 ZigbeeNetwork.sensor3.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 12 ZigbeeNetwork.sensor3.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 13 ZigbeeNetwork.sensor3.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 14 ZigbeeNetwork.sensor3.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 15 ZigbeeNetwork.lamp1.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 16 ZigbeeNetwork.lamp1.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 17 ZigbeeNetwork.lamp1.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 18 ZigbeeNetwork.lamp1.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 19 ZigbeeNetwork.lamp1.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 20 ZigbeeNetwork.lamp2.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 21 ZigbeeNetwork.lamp2.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 22 ZigbeeNetwork.lamp2.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 23 ZigbeeNetwork.lamp2.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 24 ZigbeeNetwork.lamp2.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 25 ZigbeeNetwork.lamp3.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 26 ZigbeeNetwork.lamp3.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 27 ZigbeeNetwork.lamp3.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 28 ZigbeeNetwork.lamp3.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 29 ZigbeeNetwork.lamp3.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 30 ZigbeeNetwork.controller.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 31 ZigbeeNetwork.controller.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 32 ZigbeeNetwork.controller.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 33 ZigbeeNetwork.controller.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 34 ZigbeeNetwork.controller.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 35 ZigbeeNetwork.ac.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 36 ZigbeeNetwork.sensor1.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 37 ZigbeeNetwork.sensor3.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 38 ZigbeeNetwork.lamp1.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 39 ZigbeeNetwork.lamp2.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 40 ZigbeeNetwork.lamp3.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 41 ZigbeeNetwork.controller.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 42 ZigbeeNetwork.ac.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 43 ZigbeeNetwork.ac.wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 44 ZigbeeNetwork.sensor1.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 45 ZigbeeNetwork.sensor1.wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 46 ZigbeeNetwork.sensor3.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 47 ZigbeeNetwork.sensor3.wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 48 ZigbeeNetwork.lamp1.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 49 ZigbeeNetwork.lamp1.wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 50 ZigbeeNetwork.lamp2.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 51 ZigbeeNetwork.lamp2.wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 52 ZigbeeNetwork.lamp3.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 53 ZigbeeNetwork.lamp3.wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 54 ZigbeeNetwork.controller.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 55 ZigbeeNetwork.controller.wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 56 ZigbeeNetwork.ac.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 57 ZigbeeNetwork.sensor1.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 58 ZigbeeNetwork.sensor3.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 59 ZigbeeNetwork.lamp1.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 60 ZigbeeNetwork.lamp2.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 61 ZigbeeNetwork.lamp3.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 62 ZigbeeNetwork.controller.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 63 ZigbeeNetwork.sensor1.app[0] packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 64 ZigbeeNetwork.sensor1.udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 65 ZigbeeNetwork.sensor1.wlan[0].queue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 66 ZigbeeNetwork.sensor1.wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 67 ZigbeeNetwork.sensor1.energyStorage residualEnergyCapacity:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source residualEnergyCapacityChanged
+attr title "Residual energy capacity"
+attr unit J
+vector 68 ZigbeeNetwork.sensor1.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 69 ZigbeeNetwork.sensor1.wlan[0].queue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 70 ZigbeeNetwork.sensor1.wlan[0].queue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 71 ZigbeeNetwork.sensor1.wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 72 ZigbeeNetwork.controller.energyStorage residualEnergyCapacity:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source residualEnergyCapacityChanged
+attr title "Residual energy capacity"
+attr unit J
+vector 73 ZigbeeNetwork.sensor3.energyStorage residualEnergyCapacity:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source residualEnergyCapacityChanged
+attr title "Residual energy capacity"
+attr unit J
+vector 74 ZigbeeNetwork.ac.energyStorage residualEnergyCapacity:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source residualEnergyCapacityChanged
+attr title "Residual energy capacity"
+attr unit J
+vector 75 ZigbeeNetwork.lamp3.energyStorage residualEnergyCapacity:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source residualEnergyCapacityChanged
+attr title "Residual energy capacity"
+attr unit J
+vector 76 ZigbeeNetwork.lamp1.energyStorage residualEnergyCapacity:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source residualEnergyCapacityChanged
+attr title "Residual energy capacity"
+attr unit J
+vector 77 ZigbeeNetwork.lamp2.energyStorage residualEnergyCapacity:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source residualEnergyCapacityChanged
+attr title "Residual energy capacity"
+attr unit J
+vector 78 ZigbeeNetwork.controller.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 79 ZigbeeNetwork.controller.udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 80 ZigbeeNetwork.controller.app[1] packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 81 ZigbeeNetwork.controller.app[1] throughput:vector ETV
+attr recordingmode vector
+attr source throughput(packetReceived)
+attr title throughput
+attr unit bps
+vector 82 ZigbeeNetwork.controller.app[1] endToEndDelay:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source dataAge(packetReceived)
+attr title "end-to-end delay"
+attr unit s
+vector 83 ZigbeeNetwork.controller.app[1] rcvdPkSeqNo:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source appPkSeqNo(packetReceived)
+attr title "received packet sequence number"
+vector 84 ZigbeeNetwork.sensor3.wlan[0].mac packetDropNotAddressToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 85 ZigbeeNetwork.ac.wlan[0].mac packetDropNotAddressToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 86 ZigbeeNetwork.lamp3.wlan[0].mac packetDropNotAddressToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 87 ZigbeeNetwork.lamp1.wlan[0].mac packetDropNotAddressToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 88 ZigbeeNetwork.lamp2.wlan[0].mac packetDropNotAddressToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 89 ZigbeeNetwork.sensor3.app[0] packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 90 ZigbeeNetwork.sensor3.udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 91 ZigbeeNetwork.sensor3.wlan[0].queue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 92 ZigbeeNetwork.sensor3.wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 93 ZigbeeNetwork.sensor3.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 94 ZigbeeNetwork.sensor3.wlan[0].queue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 95 ZigbeeNetwork.sensor3.wlan[0].queue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 96 ZigbeeNetwork.sensor3.wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 97 ZigbeeNetwork.sensor1.wlan[0].mac packetDropNotAddressToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 98 ZigbeeNetwork.controller.app[0] packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 99 ZigbeeNetwork.controller.udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 100 ZigbeeNetwork.controller.wlan[0].queue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 101 ZigbeeNetwork.controller.wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 102 ZigbeeNetwork.controller.wlan[0].queue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 103 ZigbeeNetwork.controller.wlan[0].queue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 104 ZigbeeNetwork.controller.wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 105 ZigbeeNetwork.lamp2.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 106 ZigbeeNetwork.lamp2.udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 107 ZigbeeNetwork.lamp2.app[0] packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 108 ZigbeeNetwork.lamp2.app[0] throughput:vector ETV
+attr recordingmode vector
+attr source throughput(packetReceived)
+attr title throughput
+attr unit bps
+vector 109 ZigbeeNetwork.lamp2.app[0] endToEndDelay:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source dataAge(packetReceived)
+attr title "end-to-end delay"
+attr unit s
+vector 110 ZigbeeNetwork.lamp2.app[0] rcvdPkSeqNo:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source appPkSeqNo(packetReceived)
+attr title "received packet sequence number"
+vector 111 ZigbeeNetwork.controller.wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drop: retry limit reached, packetBytes"
+vector 112 ZigbeeNetwork.lamp3.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 113 ZigbeeNetwork.lamp3.udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 114 ZigbeeNetwork.lamp3.app[0] packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 115 ZigbeeNetwork.lamp3.app[0] throughput:vector ETV
+attr recordingmode vector
+attr source throughput(packetReceived)
+attr title throughput
+attr unit bps
+vector 116 ZigbeeNetwork.lamp3.app[0] endToEndDelay:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source dataAge(packetReceived)
+attr title "end-to-end delay"
+attr unit s
+vector 117 ZigbeeNetwork.lamp3.app[0] rcvdPkSeqNo:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source appPkSeqNo(packetReceived)
+attr title "received packet sequence number"
+0	0	0	0
+0	0	0	0
+0	0	0	0
+0	0	0	0
+0	0	0	0
+1	0	0	0
+1	0	0	0
+1	0	0	0
+1	0	0	0
+1	0	0	0
+2	0	0	0
+3	0	0	0
+4	0	0	0
+5	0	0	0
+5	0	0	0
+5	0	0	0
+5	0	0	0
+5	0	0	0
+5	17	0.544883177383	1
+5	19	0.545331177383	0
+5	682	1.544883177383	1
+5	698	1.546931177383	0
+6	0	0	0
+6	0	0	0
+6	0	0	0
+6	0	0	0
+6	0	0	0
+6	17	0.544883177383	304
+6	19	0.545331177383	0
+6	682	1.544883177383	304
+6	698	1.546931177383	0
+7	0	0	0
+8	0	0	0
+9	0	0	0
+10	0	0	0
+10	0	0	0
+10	0	0	0
+10	0	0	0
+10	0	0	0
+10	69	0.645894115092	1
+10	71	0.646342115092	0
+10	749	1.645894115092	1
+10	751	1.646662115092	0
+11	0	0	0
+11	0	0	0
+11	0	0	0
+11	0	0	0
+11	0	0	0
+11	69	0.645894115092	304
+11	71	0.646342115092	0
+11	749	1.645894115092	304
+11	751	1.646662115092	0
+12	0	0	0
+13	0	0	0
+14	0	0	0
+15	0	0	0
+15	0	0	0
+15	0	0	0
+15	0	0	0
+15	0	0	0
+16	0	0	0
+16	0	0	0
+16	0	0	0
+16	0	0	0
+16	0	0	0
+17	0	0	0
+18	0	0	0
+19	0	0	0
+20	0	0	0
+20	0	0	0
+20	0	0	0
+20	0	0	0
+20	0	0	0
+21	0	0	0
+21	0	0	0
+21	0	0	0
+21	0	0	0
+21	0	0	0
+22	0	0	0
+22	135	0.655899038952	1
+22	185	0.782179038952	2
+22	427	1.156859038952	3
+23	0	0	0
+24	0	0	0
+25	0	0	0
+25	0	0	0
+25	0	0	0
+25	0	0	0
+25	0	0	0
+26	0	0	0
+26	0	0	0
+26	0	0	0
+26	0	0	0
+26	0	0	0
+27	0	0	0
+27	477	1.283139094632	1
+28	0	0	0
+29	0	0	0
+30	0	0	0
+30	0	0	0
+30	0	0	0
+30	0	0	0
+30	0	0	0
+30	117	0.653882567221	1
+30	119	0.654010567221	0
+30	167	0.778882567221	1
+30	169	0.780290567221	0
+30	215	0.903882567221	1
+30	217	0.904970567221	0
+30	313	1.028882567221	1
+30	315	1.029650567221	0
+30	409	1.153882567221	1
+30	411	1.154970567221	0
+30	457	1.278882567221	1
+30	459	1.281250567221	0
+30	506	1.403882567221	1
+30	508	1.404330567221	0
+30	602	1.528882567221	1
+30	604	1.531250567221	0
+31	0	0	0
+31	0	0	0
+31	0	0	0
+31	0	0	0
+31	0	0	0
+31	117	0.653882567221	304
+31	119	0.654010567221	0
+31	167	0.778882567221	304
+31	169	0.780290567221	0
+31	215	0.903882567221	304
+31	217	0.904970567221	0
+31	313	1.028882567221	304
+31	315	1.029650567221	0
+31	409	1.153882567221	304
+31	411	1.154970567221	0
+31	457	1.278882567221	304
+31	459	1.281250567221	0
+31	506	1.403882567221	304
+31	508	1.404330567221	0
+31	602	1.528882567221	304
+31	604	1.531250567221	0
+32	0	0	0
+32	31	0.547219344165	1
+32	83	0.648230350957	2
+32	710	1.548819344165	3
+33	0	0	0
+34	0	0	0
+35	0	0	0
+35	0	0	0
+35	0	0	0
+35	0	0	0
+35	0	0	5e-06
+35	23	0.545523649114	0
+35	23	0.545523649114	0.05
+35	35	0.547219649114	5e-06
+35	49	0.547411945506	0.05
+35	60	0.547763945506	5e-06
+35	77	0.646534802752	5e-06
+35	99	0.648422952298	0
+35	99	0.648422952298	0.05
+35	110	0.648774952298	5e-06
+35	125	0.654203168562	0.05
+35	139	0.655899168562	5e-06
+35	149	0.656092106878	5e-06
+35	175	0.780483168562	0
+35	175	0.780483168562	0.05
+35	189	0.782179168562	5e-06
+35	199	0.782372106878	5e-06
+35	223	0.905163168562	0
+35	223	0.905163168562	0.05
+35	234	0.906859168562	5e-06
+35	245	0.909339168562	0.05
+35	256	0.911035168562	5e-06
+35	267	0.913835168562	0.05
+35	278	0.915531168562	5e-06
+35	290	0.918651168562	0.05
+35	301	0.920347168562	5e-06
+35	321	1.029843168562	0.05
+35	332	1.031539168562	5e-06
+35	343	1.033379168562	0.05
+35	354	1.035075168562	5e-06
+35	365	1.035955168562	0.05
+35	376	1.037651168562	5e-06
+35	387	1.038851168562	0.05
+35	398	1.040547168562	5e-06
+35	417	1.155163168562	0.05
+35	431	1.156859168562	5e-06
+35	441	1.157052106878	5e-06
+35	465	1.281443168562	0
+35	465	1.281443168562	0.05
+35	479	1.283139168562	5e-06
+35	484	1.283331467568	0.05
+35	491	1.283683467568	5e-06
+35	514	1.404523168562	0.05
+35	525	1.406219168562	5e-06
+35	536	1.407419168562	0.05
+35	547	1.409115168562	5e-06
+35	558	1.410315168562	0.05
+35	569	1.412011168562	5e-06
+35	580	1.415131168562	0.05
+35	592	1.416827168562	5e-06
+35	610	1.531443168562	0.05
+35	621	1.533139168562	5e-06
+35	632	1.534659168562	0.05
+35	643	1.536355168562	5e-06
+35	654	1.538515168562	0.05
+35	665	1.540211168562	5e-06
+35	677	1.543331168562	0.05
+35	692	1.545027168562	5e-06
+35	702	1.547123649114	0.05
+35	714	1.548819649114	5e-06
+35	728	1.549011945506	0.05
+35	739	1.549363945506	5e-06
+35	757	1.646854802752	5e-06
+36	0	0	0
+36	0	0	0
+36	0	0	0
+36	0	0	0
+36	0	0	5e-06
+36	19	0.545331177383	0
+36	19	0.545331177383	0
+36	19	0.545331177383	0.005
+36	20	0.545523177383	0
+36	20	0.545523177383	0.075
+36	27	0.547219177383	0.005
+36	27	0.547219177383	0
+36	27	0.547219177383	5e-06
+36	27	0.547219177383	5e-06
+36	27	0.547219177383	5e-06
+36	45	0.547411510947	0
+36	45	0.547411510947	0.05
+36	52	0.547763510947	5e-06
+36	74	0.646534488028	0.05
+36	85	0.648230488028	5e-06
+36	95	0.648422517739	0.05
+36	102	0.648774517739	5e-06
+36	121	0.654202734003	0.05
+36	128	0.655898734003	5e-06
+36	146	0.656091640293	0.05
+36	155	0.656443640293	5e-06
+36	171	0.780482734003	0.05
+36	178	0.782178734003	5e-06
+36	196	0.782371640293	0.05
+36	205	0.782723640293	5e-06
+36	219	0.905162734003	0.05
+36	226	0.906858734003	5e-06
+36	241	0.909338734003	0.05
+36	248	0.911034734003	5e-06
+36	263	0.913834734003	0.05
+36	270	0.915530734003	5e-06
+36	286	0.918650734003	0.05
+36	293	0.920346734003	5e-06
+36	317	1.029842734003	0.05
+36	324	1.031538734003	5e-06
+36	339	1.033378734003	0.05
+36	346	1.035074734003	5e-06
+36	361	1.035954734003	0.05
+36	368	1.037650734003	5e-06
+36	383	1.038850734003	0.05
+36	390	1.040546734003	5e-06
+36	413	1.155162734003	0.05
+36	420	1.156858734003	5e-06
+36	438	1.157051640293	0.05
+36	447	1.157403640293	5e-06
+36	461	1.281442734003	0.05
+36	468	1.283138734003	5e-06
+36	486	1.283331594978	0.05
+36	495	1.283683594978	5e-06
+36	510	1.404522734003	0.05
+36	517	1.406218734003	5e-06
+36	532	1.407418734003	0.05
+36	539	1.409114734003	5e-06
+36	554	1.410314734003	0.05
+36	561	1.412010734003	5e-06
+36	576	1.415130734003	0.05
+36	584	1.416826734003	5e-06
+36	606	1.531442734003	0.05
+36	613	1.533138734003	5e-06
+36	628	1.534658734003	0.05
+36	635	1.536354734003	5e-06
+36	650	1.538514734003	0.05
+36	657	1.540210734003	5e-06
+36	673	1.543330734003	0.05
+36	684	1.545026734003	5e-06
+36	698	1.546931177383	0
+36	698	1.546931177383	0
+36	698	1.546931177383	0.005
+36	698	1.546931177383	0.005
+36	699	1.547123177383	0
+36	699	1.547123177383	0.075
+36	706	1.548819177383	0.005
+36	706	1.548819177383	0
+36	706	1.548819177383	5e-06
+36	706	1.548819177383	5e-06
+36	706	1.548819177383	5e-06
+36	724	1.549011510947	0
+36	724	1.549011510947	0.05
+36	731	1.549363510947	5e-06
+36	754	1.646854488028	0.05
+37	0	0	0
+37	0	0	0
+37	0	0	0
+37	0	0	0
+37	0	0	5e-06
+37	22	0.545523550319	0
+37	22	0.545523550319	0.05
+37	33	0.547219550319	5e-06
+37	46	0.54741158003	0.05
+37	54	0.54776358003	5e-06
+37	71	0.646342115092	0
+37	71	0.646342115092	0
+37	71	0.646342115092	0.005
+37	71	0.646342115092	0.005
+37	72	0.646534115092	0
+37	72	0.646534115092	0.075
+37	79	0.648230115092	0.005
+37	79	0.648230115092	0
+37	79	0.648230115092	5e-06
+37	79	0.648230115092	5e-06
+37	79	0.648230115092	5e-06
+37	96	0.648422586822	0
+37	96	0.648422586822	0.05
+37	104	0.648774586822	5e-06
+37	122	0.654202803086	0.05
+37	130	0.655898803086	5e-06
+37	145	0.656091566363	0.05
+37	153	0.656443566363	5e-06
+37	172	0.780482803086	0.05
+37	180	0.782178803086	5e-06
+37	195	0.782371566363	0.05
+37	203	0.782723566363	5e-06
+37	220	0.905162803086	0.05
+37	228	0.906858803086	5e-06
+37	242	0.909338803086	0.05
+37	250	0.911034803086	5e-06
+37	264	0.913834803086	0.05
+37	272	0.915530803086	5e-06
+37	287	0.918650803086	0.05
+37	295	0.920346803086	5e-06
+37	318	1.029842803086	0.05
+37	326	1.031538803086	5e-06
+37	340	1.033378803086	0.05
+37	348	1.035074803086	5e-06
+37	362	1.035954803086	0.05
+37	370	1.037650803086	5e-06
+37	384	1.038850803086	0.05
+37	392	1.040546803086	5e-06
+37	414	1.155162803086	0.05
+37	422	1.156858803086	5e-06
+37	437	1.157051566363	0.05
+37	445	1.157403566363	5e-06
+37	462	1.281442803086	0.05
+37	470	1.283138803086	5e-06
+37	485	1.283331566363	0.05
+37	493	1.283683566363	5e-06
+37	511	1.404522803086	0.05
+37	519	1.406218803086	5e-06
+37	533	1.407418803086	0.05
+37	541	1.409114803086	5e-06
+37	555	1.410314803086	0.05
+37	563	1.412010803086	5e-06
+37	577	1.415130803086	0.05
+37	586	1.416826803086	5e-06
+37	607	1.531442803086	0.05
+37	615	1.533138803086	5e-06
+37	629	1.534658803086	0.05
+37	637	1.536354803086	5e-06
+37	651	1.538514803086	0.05
+37	659	1.540210803086	5e-06
+37	674	1.543330803086	0.05
+37	686	1.545026803086	5e-06
+37	701	1.547123550319	0.05
+37	712	1.548819550319	5e-06
+37	725	1.54901158003	0.05
+37	733	1.54936358003	5e-06
+37	751	1.646662115092	0
+37	751	1.646662115092	0
+37	751	1.646662115092	0.005
+37	751	1.646662115092	0.005
+37	752	1.646854115092	0
+37	752	1.646854115092	0.075
+37	759	1.648550115092	0.005
+37	759	1.648550115092	0
+37	759	1.648550115092	5e-06
+37	759	1.648550115092	5e-06
+37	759	1.648550115092	5e-06
+38	0	0	0
+38	0	0	0
+38	0	0	0
+38	0	0	0
+38	0	0	5e-06
+38	25	0.545523704794	0
+38	25	0.545523704794	0.05
+38	39	0.547219704794	5e-06
+38	50	0.547412031825	5e-06
+38	704	1.547123704794	0
+38	704	1.547123704794	0.05
+38	718	1.548819704794	5e-06
+38	729	1.549012031825	5e-06
+39	0	0	0
+39	0	0	0
+39	0	0	0
+39	0	0	0
+39	0	0	5e-06
+39	26	0.545523778724	0
+39	26	0.545523778724	0.05
+39	41	0.547219778724	5e-06
+39	47	0.547411815896	0.05
+39	56	0.547763815896	5e-06
+39	76	0.646534642503	0.05
+39	89	0.648230642503	5e-06
+39	97	0.648422822688	0.05
+39	106	0.648774822688	5e-06
+39	123	0.654203038952	0.05
+39	132	0.655899038952	5e-06
+39	133	0.655899038952	0
+39	133	0.655899038952	0
+39	133	0.655899038952	0.005
+39	133	0.655899038952	0.005
+39	143	0.656091038952	0
+39	143	0.656091038952	0.075
+39	150	0.656443038952	0.005
+39	150	0.656443038952	0
+39	150	0.656443038952	5e-06
+39	150	0.656443038952	5e-06
+39	150	0.656443038952	5e-06
+39	173	0.780483038952	0
+39	173	0.780483038952	0.05
+39	182	0.782179038952	5e-06
+39	183	0.782179038952	0
+39	183	0.782179038952	0
+39	183	0.782179038952	0.005
+39	183	0.782179038952	0.005
+39	193	0.782371038952	0
+39	193	0.782371038952	0.075
+39	200	0.782723038952	0.005
+39	200	0.782723038952	0
+39	200	0.782723038952	5e-06
+39	200	0.782723038952	5e-06
+39	200	0.782723038952	5e-06
+39	221	0.905163038952	0
+39	221	0.905163038952	0.05
+39	230	0.906859038952	5e-06
+39	243	0.909339038952	0.05
+39	252	0.911035038952	5e-06
+39	265	0.913835038952	0.05
+39	274	0.915531038952	5e-06
+39	288	0.918651038952	0.05
+39	297	0.920347038952	5e-06
+39	319	1.029843038952	0.05
+39	328	1.031539038952	5e-06
+39	341	1.033379038952	0.05
+39	350	1.035075038952	5e-06
+39	363	1.035955038952	0.05
+39	372	1.037651038952	5e-06
+39	385	1.038851038952	0.05
+39	394	1.040547038952	5e-06
+39	415	1.155163038952	0.05
+39	424	1.156859038952	5e-06
+39	425	1.156859038952	0
+39	425	1.156859038952	0
+39	425	1.156859038952	0.005
+39	425	1.156859038952	0.005
+39	435	1.157051038952	0
+39	435	1.157051038952	0.075
+39	442	1.157403038952	0.005
+39	442	1.157403038952	0
+39	442	1.157403038952	5e-06
+39	442	1.157403038952	5e-06
+39	442	1.157403038952	5e-06
+39	463	1.281443038952	0
+39	463	1.281443038952	0.05
+39	472	1.283139038952	5e-06
+39	489	1.28333206713	5e-06
+39	512	1.404523038952	0
+39	512	1.404523038952	0.05
+39	521	1.406219038952	5e-06
+39	534	1.407419038952	0.05
+39	543	1.409115038952	5e-06
+39	556	1.410315038952	0.05
+39	565	1.412011038952	5e-06
+39	578	1.415131038952	0.05
+39	588	1.416827038952	5e-06
+39	608	1.531443038952	0.05
+39	617	1.533139038952	5e-06
+39	630	1.534659038952	0.05
+39	639	1.536355038952	5e-06
+39	652	1.538515038952	0.05
+39	661	1.540211038952	5e-06
+39	675	1.543331038952	0.05
+39	688	1.545027038952	5e-06
+39	705	1.547123778724	0.05
+39	720	1.548819778724	5e-06
+39	726	1.549011815896	0.05
+39	735	1.549363815896	5e-06
+39	756	1.646854642503	0.05
+40	0	0	0
+40	0	0	0
+40	0	0	0
+40	0	0	0
+40	0	0	5e-06
+40	24	0.545523677729	0
+40	24	0.545523677729	0.05
+40	37	0.547219677729	5e-06
+40	48	0.547411871576	0.05
+40	58	0.547763871576	5e-06
+40	75	0.646534586823	0.05
+40	87	0.648230586823	5e-06
+40	98	0.648422878368	0.05
+40	108	0.648774878368	5e-06
+40	124	0.654203094632	0.05
+40	137	0.655899094632	5e-06
+40	147	0.65609201145	5e-06
+40	174	0.780483094632	0
+40	174	0.780483094632	0.05
+40	187	0.782179094632	5e-06
+40	197	0.78237201145	5e-06
+40	222	0.905163094632	0
+40	222	0.905163094632	0.05
+40	232	0.906859094632	5e-06
+40	244	0.909339094632	0.05
+40	254	0.911035094632	5e-06
+40	266	0.913835094632	0.05
+40	276	0.915531094632	5e-06
+40	289	0.918651094632	0.05
+40	299	0.920347094632	5e-06
+40	320	1.029843094632	0.05
+40	330	1.031539094632	5e-06
+40	342	1.033379094632	0.05
+40	352	1.035075094632	5e-06
+40	364	1.035955094632	0.05
+40	374	1.037651094632	5e-06
+40	386	1.038851094632	0.05
+40	396	1.040547094632	5e-06
+40	416	1.155163094632	0.05
+40	429	1.156859094632	5e-06
+40	439	1.15705201145	5e-06
+40	464	1.281443094632	0
+40	464	1.281443094632	0.05
+40	474	1.283139094632	5e-06
+40	475	1.283139094632	0
+40	475	1.283139094632	0
+40	475	1.283139094632	0.005
+40	475	1.283139094632	0.005
+40	483	1.283331094632	0
+40	483	1.283331094632	0.075
+40	490	1.283683094632	0.005
+40	490	1.283683094632	0
+40	490	1.283683094632	5e-06
+40	490	1.283683094632	5e-06
+40	490	1.283683094632	5e-06
+40	513	1.404523094632	0
+40	513	1.404523094632	0.05
+40	523	1.406219094632	5e-06
+40	535	1.407419094632	0.05
+40	545	1.409115094632	5e-06
+40	557	1.410315094632	0.05
+40	567	1.412011094632	5e-06
+40	579	1.415131094632	0.05
+40	590	1.416827094632	5e-06
+40	609	1.531443094632	0.05
+40	619	1.533139094632	5e-06
+40	631	1.534659094632	0.05
+40	641	1.536355094632	5e-06
+40	653	1.538515094632	0.05
+40	663	1.540211094632	5e-06
+40	676	1.543331094632	0.05
+40	690	1.545027094632	5e-06
+40	703	1.547123677729	0.05
+40	716	1.548819677729	5e-06
+40	727	1.549011871576	0.05
+40	737	1.549363871576	5e-06
+40	755	1.646854586823	0.05
+41	0	0	0
+41	0	0	0
+41	0	0	0
+41	0	0	0
+41	0	0	5e-06
+41	21	0.545523344165	0
+41	21	0.545523344165	0.05
+41	28	0.547219344165	5e-06
+41	29	0.547219344165	0
+41	29	0.547219344165	0
+41	29	0.547219344165	0.005
+41	29	0.547219344165	0.005
+41	44	0.547411344165	0
+41	44	0.547411344165	0.075
+41	51	0.547763344165	0.005
+41	51	0.547763344165	0
+41	51	0.547763344165	5e-06
+41	51	0.547763344165	5e-06
+41	51	0.547763344165	5e-06
+41	73	0.646534350957	0
+41	73	0.646534350957	0.05
+41	80	0.648230350957	5e-06
+41	81	0.648230350957	0
+41	81	0.648230350957	0
+41	81	0.648230350957	0.005
+41	81	0.648230350957	0.005
+41	94	0.648422350957	0
+41	94	0.648422350957	0.075
+41	101	0.648774350957	0.005
+41	101	0.648774350957	0
+41	101	0.648774350957	5e-06
+41	101	0.648774350957	5e-06
+41	101	0.648774350957	5e-06
+41	119	0.654010567221	0
+41	119	0.654010567221	0
+41	119	0.654010567221	0.005
+41	120	0.654202567221	0
+41	120	0.654202567221	0.075
+41	127	0.655898567221	0.005
+41	127	0.655898567221	0
+41	127	0.655898567221	5e-06
+41	127	0.655898567221	5e-06
+41	127	0.655898567221	5e-06
+41	144	0.656091510683	0
+41	144	0.656091510683	0.05
+41	151	0.656443510683	5e-06
+41	169	0.780290567221	0
+41	169	0.780290567221	0
+41	169	0.780290567221	0.005
+41	169	0.780290567221	0.005
+41	170	0.780482567221	0
+41	170	0.780482567221	0.075
+41	177	0.782178567221	0.005
+41	177	0.782178567221	0
+41	177	0.782178567221	5e-06
+41	177	0.782178567221	5e-06
+41	177	0.782178567221	5e-06
+41	194	0.782371510683	0
+41	194	0.782371510683	0.05
+41	201	0.782723510683	5e-06
+41	217	0.904970567221	0
+41	217	0.904970567221	0
+41	217	0.904970567221	0.005
+41	217	0.904970567221	0.005
+41	218	0.905162567221	0
+41	218	0.905162567221	0.075
+41	225	0.906858567221	0.005
+41	225	0.906858567221	0
+41	225	0.906858567221	5e-06
+41	225	0.906858567221	5e-06
+41	225	0.906858567221	5e-06
+41	239	0.909146567221	0
+41	239	0.909146567221	0
+41	239	0.909146567221	0.005
+41	240	0.909338567221	0
+41	240	0.909338567221	0.075
+41	247	0.911034567221	0.005
+41	247	0.911034567221	0
+41	247	0.911034567221	5e-06
+41	247	0.911034567221	5e-06
+41	247	0.911034567221	5e-06
+41	261	0.913642567221	0
+41	261	0.913642567221	0
+41	261	0.913642567221	0.005
+41	262	0.913834567221	0
+41	262	0.913834567221	0.075
+41	269	0.915530567221	0.005
+41	269	0.915530567221	0
+41	269	0.915530567221	5e-06
+41	269	0.915530567221	5e-06
+41	269	0.915530567221	5e-06
+41	284	0.918458567221	0
+41	284	0.918458567221	0
+41	284	0.918458567221	0.005
+41	285	0.918650567221	0
+41	285	0.918650567221	0.075
+41	292	0.920346567221	0.005
+41	292	0.920346567221	0
+41	292	0.920346567221	5e-06
+41	292	0.920346567221	5e-06
+41	292	0.920346567221	5e-06
+41	315	1.029650567221	0
+41	315	1.029650567221	0
+41	315	1.029650567221	0.005
+41	316	1.029842567221	0
+41	316	1.029842567221	0.075
+41	323	1.031538567221	0.005
+41	323	1.031538567221	0
+41	323	1.031538567221	5e-06
+41	323	1.031538567221	5e-06
+41	323	1.031538567221	5e-06
+41	337	1.033186567221	0
+41	337	1.033186567221	0
+41	337	1.033186567221	0.005
+41	338	1.033378567221	0
+41	338	1.033378567221	0.075
+41	345	1.035074567221	0.005
+41	345	1.035074567221	0
+41	345	1.035074567221	5e-06
+41	345	1.035074567221	5e-06
+41	345	1.035074567221	5e-06
+41	359	1.035762567221	0
+41	359	1.035762567221	0
+41	359	1.035762567221	0.005
+41	360	1.035954567221	0
+41	360	1.035954567221	0.075
+41	367	1.037650567221	0.005
+41	367	1.037650567221	0
+41	367	1.037650567221	5e-06
+41	367	1.037650567221	5e-06
+41	367	1.037650567221	5e-06
+41	381	1.038658567221	0
+41	381	1.038658567221	0
+41	381	1.038658567221	0.005
+41	382	1.038850567221	0
+41	382	1.038850567221	0.075
+41	389	1.040546567221	0.005
+41	389	1.040546567221	0
+41	389	1.040546567221	5e-06
+41	389	1.040546567221	5e-06
+41	389	1.040546567221	5e-06
+41	411	1.154970567221	0
+41	411	1.154970567221	0
+41	411	1.154970567221	0.005
+41	412	1.155162567221	0
+41	412	1.155162567221	0.075
+41	419	1.156858567221	0.005
+41	419	1.156858567221	0
+41	419	1.156858567221	5e-06
+41	419	1.156858567221	5e-06
+41	419	1.156858567221	5e-06
+41	436	1.157051510683	0
+41	436	1.157051510683	0.05
+41	443	1.157403510683	5e-06
+41	459	1.281250567221	0
+41	459	1.281250567221	0
+41	459	1.281250567221	0.005
+41	459	1.281250567221	0.005
+41	460	1.281442567221	0
+41	460	1.281442567221	0.075
+41	467	1.283138567221	0.005
+41	467	1.283138567221	0
+41	467	1.283138567221	5e-06
+41	467	1.283138567221	5e-06
+41	467	1.283138567221	5e-06
+41	487	1.283331622043	0
+41	487	1.283331622043	0.05
+41	497	1.283683622043	5e-06
+41	508	1.404330567221	0
+41	508	1.404330567221	0
+41	508	1.404330567221	0.005
+41	508	1.404330567221	0.005
+41	509	1.404522567221	0
+41	509	1.404522567221	0.075
+41	516	1.406218567221	0.005
+41	516	1.406218567221	0
+41	516	1.406218567221	5e-06
+41	516	1.406218567221	5e-06
+41	516	1.406218567221	5e-06
+41	530	1.407226567221	0
+41	530	1.407226567221	0
+41	530	1.407226567221	0.005
+41	531	1.407418567221	0
+41	531	1.407418567221	0.075
+41	538	1.409114567221	0.005
+41	538	1.409114567221	0
+41	538	1.409114567221	5e-06
+41	538	1.409114567221	5e-06
+41	538	1.409114567221	5e-06
+41	552	1.410122567221	0
+41	552	1.410122567221	0
+41	552	1.410122567221	0.005
+41	553	1.410314567221	0
+41	553	1.410314567221	0.075
+41	560	1.412010567221	0.005
+41	560	1.412010567221	0
+41	560	1.412010567221	5e-06
+41	560	1.412010567221	5e-06
+41	560	1.412010567221	5e-06
+41	574	1.414938567221	0
+41	574	1.414938567221	0
+41	574	1.414938567221	0.005
+41	575	1.415130567221	0
+41	575	1.415130567221	0.075
+41	583	1.416826567221	0.005
+41	583	1.416826567221	0
+41	583	1.416826567221	5e-06
+41	583	1.416826567221	5e-06
+41	583	1.416826567221	5e-06
+41	604	1.531250567221	0
+41	604	1.531250567221	0
+41	604	1.531250567221	0.005
+41	605	1.531442567221	0
+41	605	1.531442567221	0.075
+41	612	1.533138567221	0.005
+41	612	1.533138567221	0
+41	612	1.533138567221	5e-06
+41	612	1.533138567221	5e-06
+41	612	1.533138567221	5e-06
+41	626	1.534466567221	0
+41	626	1.534466567221	0
+41	626	1.534466567221	0.005
+41	627	1.534658567221	0
+41	627	1.534658567221	0.075
+41	634	1.536354567221	0.005
+41	634	1.536354567221	0
+41	634	1.536354567221	5e-06
+41	634	1.536354567221	5e-06
+41	634	1.536354567221	5e-06
+41	648	1.538322567221	0
+41	648	1.538322567221	0
+41	648	1.538322567221	0.005
+41	649	1.538514567221	0
+41	649	1.538514567221	0.075
+41	656	1.540210567221	0.005
+41	656	1.540210567221	0
+41	656	1.540210567221	5e-06
+41	656	1.540210567221	5e-06
+41	656	1.540210567221	5e-06
+41	670	1.543138567221	0
+41	670	1.543138567221	0
+41	670	1.543138567221	0.005
+41	672	1.543330567221	0
+41	672	1.543330567221	0.075
+41	683	1.545026567221	0.005
+41	683	1.545026567221	0
+41	683	1.545026567221	5e-06
+41	683	1.545026567221	5e-06
+41	683	1.545026567221	5e-06
+41	700	1.547123344165	0
+41	700	1.547123344165	0.05
+41	707	1.548819344165	5e-06
+41	708	1.548819344165	0
+41	708	1.548819344165	0
+41	708	1.548819344165	0.005
+41	708	1.548819344165	0.005
+41	723	1.549011344165	0
+41	723	1.549011344165	0.075
+41	730	1.549363344165	0.005
+41	730	1.549363344165	0
+41	730	1.549363344165	5e-06
+41	730	1.549363344165	5e-06
+41	730	1.549363344165	5e-06
+41	753	1.646854350957	0
+41	753	1.646854350957	0.05
+42	0	0	0
+42	0	0	0
+42	0	0	2
+43	0	0	0
+43	0	0	0
+43	0	0	0
+43	0	0	5e-06
+43	23	0.545523649114	0
+43	23	0.545523649114	0.05
+43	35	0.547219649114	5e-06
+43	49	0.547411945506	0.05
+43	60	0.547763945506	5e-06
+43	77	0.646534802752	5e-06
+43	99	0.648422952298	0
+43	99	0.648422952298	0.05
+43	110	0.648774952298	5e-06
+43	125	0.654203168562	0.05
+43	139	0.655899168562	5e-06
+43	149	0.656092106878	5e-06
+43	175	0.780483168562	0
+43	175	0.780483168562	0.05
+43	189	0.782179168562	5e-06
+43	199	0.782372106878	5e-06
+43	223	0.905163168562	0
+43	223	0.905163168562	0.05
+43	234	0.906859168562	5e-06
+43	245	0.909339168562	0.05
+43	256	0.911035168562	5e-06
+43	267	0.913835168562	0.05
+43	278	0.915531168562	5e-06
+43	290	0.918651168562	0.05
+43	301	0.920347168562	5e-06
+43	321	1.029843168562	0.05
+43	332	1.031539168562	5e-06
+43	343	1.033379168562	0.05
+43	354	1.035075168562	5e-06
+43	365	1.035955168562	0.05
+43	376	1.037651168562	5e-06
+43	387	1.038851168562	0.05
+43	398	1.040547168562	5e-06
+43	417	1.155163168562	0.05
+43	431	1.156859168562	5e-06
+43	441	1.157052106878	5e-06
+43	465	1.281443168562	0
+43	465	1.281443168562	0.05
+43	479	1.283139168562	5e-06
+43	484	1.283331467568	0.05
+43	491	1.283683467568	5e-06
+43	514	1.404523168562	0.05
+43	525	1.406219168562	5e-06
+43	536	1.407419168562	0.05
+43	547	1.409115168562	5e-06
+43	558	1.410315168562	0.05
+43	569	1.412011168562	5e-06
+43	580	1.415131168562	0.05
+43	592	1.416827168562	5e-06
+43	610	1.531443168562	0.05
+43	621	1.533139168562	5e-06
+43	632	1.534659168562	0.05
+43	643	1.536355168562	5e-06
+43	654	1.538515168562	0.05
+43	665	1.540211168562	5e-06
+43	677	1.543331168562	0.05
+43	692	1.545027168562	5e-06
+43	702	1.547123649114	0.05
+43	714	1.548819649114	5e-06
+43	728	1.549011945506	0.05
+43	739	1.549363945506	5e-06
+43	757	1.646854802752	5e-06
+44	0	0	0
+44	0	0	0
+44	0	0	2
+44	19	0.545331177383	3
+44	27	0.547219177383	2
+44	698	1.546931177383	3
+44	706	1.548819177383	2
+45	0	0	0
+45	0	0	0
+45	0	0	0
+45	0	0	5e-06
+45	19	0.545331177383	0
+45	19	0.545331177383	0
+45	19	0.545331177383	0.005
+45	20	0.545523177383	0
+45	20	0.545523177383	0.075
+45	27	0.547219177383	0.005
+45	27	0.547219177383	0
+45	27	0.547219177383	5e-06
+45	27	0.547219177383	5e-06
+45	27	0.547219177383	5e-06
+45	45	0.547411510947	0
+45	45	0.547411510947	0.05
+45	52	0.547763510947	5e-06
+45	74	0.646534488028	0.05
+45	85	0.648230488028	5e-06
+45	95	0.648422517739	0.05
+45	102	0.648774517739	5e-06
+45	121	0.654202734003	0.05
+45	128	0.655898734003	5e-06
+45	146	0.656091640293	0.05
+45	155	0.656443640293	5e-06
+45	171	0.780482734003	0.05
+45	178	0.782178734003	5e-06
+45	196	0.782371640293	0.05
+45	205	0.782723640293	5e-06
+45	219	0.905162734003	0.05
+45	226	0.906858734003	5e-06
+45	241	0.909338734003	0.05
+45	248	0.911034734003	5e-06
+45	263	0.913834734003	0.05
+45	270	0.915530734003	5e-06
+45	286	0.918650734003	0.05
+45	293	0.920346734003	5e-06
+45	317	1.029842734003	0.05
+45	324	1.031538734003	5e-06
+45	339	1.033378734003	0.05
+45	346	1.035074734003	5e-06
+45	361	1.035954734003	0.05
+45	368	1.037650734003	5e-06
+45	383	1.038850734003	0.05
+45	390	1.040546734003	5e-06
+45	413	1.155162734003	0.05
+45	420	1.156858734003	5e-06
+45	438	1.157051640293	0.05
+45	447	1.157403640293	5e-06
+45	461	1.281442734003	0.05
+45	468	1.283138734003	5e-06
+45	486	1.283331594978	0.05
+45	495	1.283683594978	5e-06
+45	510	1.404522734003	0.05
+45	517	1.406218734003	5e-06
+45	532	1.407418734003	0.05
+45	539	1.409114734003	5e-06
+45	554	1.410314734003	0.05
+45	561	1.412010734003	5e-06
+45	576	1.415130734003	0.05
+45	584	1.416826734003	5e-06
+45	606	1.531442734003	0.05
+45	613	1.533138734003	5e-06
+45	628	1.534658734003	0.05
+45	635	1.536354734003	5e-06
+45	650	1.538514734003	0.05
+45	657	1.540210734003	5e-06
+45	673	1.543330734003	0.05
+45	684	1.545026734003	5e-06
+45	698	1.546931177383	0
+45	698	1.546931177383	0
+45	698	1.546931177383	0.005
+45	698	1.546931177383	0.005
+45	699	1.547123177383	0
+45	699	1.547123177383	0.075
+45	706	1.548819177383	0.005
+45	706	1.548819177383	0
+45	706	1.548819177383	5e-06
+45	706	1.548819177383	5e-06
+45	706	1.548819177383	5e-06
+45	724	1.549011510947	0
+45	724	1.549011510947	0.05
+45	731	1.549363510947	5e-06
+45	754	1.646854488028	0.05
+46	0	0	0
+46	0	0	0
+46	0	0	2
+46	71	0.646342115092	3
+46	79	0.648230115092	2
+46	751	1.646662115092	3
+46	759	1.648550115092	2
+47	0	0	0
+47	0	0	0
+47	0	0	0
+47	0	0	5e-06
+47	22	0.545523550319	0
+47	22	0.545523550319	0.05
+47	33	0.547219550319	5e-06
+47	46	0.54741158003	0.05
+47	54	0.54776358003	5e-06
+47	71	0.646342115092	0
+47	71	0.646342115092	0
+47	71	0.646342115092	0.005
+47	71	0.646342115092	0.005
+47	72	0.646534115092	0
+47	72	0.646534115092	0.075
+47	79	0.648230115092	0.005
+47	79	0.648230115092	0
+47	79	0.648230115092	5e-06
+47	79	0.648230115092	5e-06
+47	79	0.648230115092	5e-06
+47	96	0.648422586822	0
+47	96	0.648422586822	0.05
+47	104	0.648774586822	5e-06
+47	122	0.654202803086	0.05
+47	130	0.655898803086	5e-06
+47	145	0.656091566363	0.05
+47	153	0.656443566363	5e-06
+47	172	0.780482803086	0.05
+47	180	0.782178803086	5e-06
+47	195	0.782371566363	0.05
+47	203	0.782723566363	5e-06
+47	220	0.905162803086	0.05
+47	228	0.906858803086	5e-06
+47	242	0.909338803086	0.05
+47	250	0.911034803086	5e-06
+47	264	0.913834803086	0.05
+47	272	0.915530803086	5e-06
+47	287	0.918650803086	0.05
+47	295	0.920346803086	5e-06
+47	318	1.029842803086	0.05
+47	326	1.031538803086	5e-06
+47	340	1.033378803086	0.05
+47	348	1.035074803086	5e-06
+47	362	1.035954803086	0.05
+47	370	1.037650803086	5e-06
+47	384	1.038850803086	0.05
+47	392	1.040546803086	5e-06
+47	414	1.155162803086	0.05
+47	422	1.156858803086	5e-06
+47	437	1.157051566363	0.05
+47	445	1.157403566363	5e-06
+47	462	1.281442803086	0.05
+47	470	1.283138803086	5e-06
+47	485	1.283331566363	0.05
+47	493	1.283683566363	5e-06
+47	511	1.404522803086	0.05
+47	519	1.406218803086	5e-06
+47	533	1.407418803086	0.05
+47	541	1.409114803086	5e-06
+47	555	1.410314803086	0.05
+47	563	1.412010803086	5e-06
+47	577	1.415130803086	0.05
+47	586	1.416826803086	5e-06
+47	607	1.531442803086	0.05
+47	615	1.533138803086	5e-06
+47	629	1.534658803086	0.05
+47	637	1.536354803086	5e-06
+47	651	1.538514803086	0.05
+47	659	1.540210803086	5e-06
+47	674	1.543330803086	0.05
+47	686	1.545026803086	5e-06
+47	701	1.547123550319	0.05
+47	712	1.548819550319	5e-06
+47	725	1.54901158003	0.05
+47	733	1.54936358003	5e-06
+47	751	1.646662115092	0
+47	751	1.646662115092	0
+47	751	1.646662115092	0.005
+47	751	1.646662115092	0.005
+47	752	1.646854115092	0
+47	752	1.646854115092	0.075
+47	759	1.648550115092	0.005
+47	759	1.648550115092	0
+47	759	1.648550115092	5e-06
+47	759	1.648550115092	5e-06
+47	759	1.648550115092	5e-06
+48	0	0	0
+48	0	0	0
+48	0	0	2
+49	0	0	0
+49	0	0	0
+49	0	0	0
+49	0	0	5e-06
+49	25	0.545523704794	0
+49	25	0.545523704794	0.05
+49	39	0.547219704794	5e-06
+49	50	0.547412031825	5e-06
+49	704	1.547123704794	0
+49	704	1.547123704794	0.05
+49	718	1.548819704794	5e-06
+49	729	1.549012031825	5e-06
+50	0	0	0
+50	0	0	0
+50	0	0	2
+50	133	0.655899038952	3
+50	150	0.656443038952	2
+50	183	0.782179038952	3
+50	200	0.782723038952	2
+50	425	1.156859038952	3
+50	442	1.157403038952	2
+51	0	0	0
+51	0	0	0
+51	0	0	0
+51	0	0	5e-06
+51	26	0.545523778724	0
+51	26	0.545523778724	0.05
+51	41	0.547219778724	5e-06
+51	47	0.547411815896	0.05
+51	56	0.547763815896	5e-06
+51	76	0.646534642503	0.05
+51	89	0.648230642503	5e-06
+51	97	0.648422822688	0.05
+51	106	0.648774822688	5e-06
+51	123	0.654203038952	0.05
+51	132	0.655899038952	5e-06
+51	133	0.655899038952	0
+51	133	0.655899038952	0
+51	133	0.655899038952	0.005
+51	133	0.655899038952	0.005
+51	143	0.656091038952	0
+51	143	0.656091038952	0.075
+51	150	0.656443038952	0.005
+51	150	0.656443038952	0
+51	150	0.656443038952	5e-06
+51	150	0.656443038952	5e-06
+51	150	0.656443038952	5e-06
+51	173	0.780483038952	0
+51	173	0.780483038952	0.05
+51	182	0.782179038952	5e-06
+51	183	0.782179038952	0
+51	183	0.782179038952	0
+51	183	0.782179038952	0.005
+51	183	0.782179038952	0.005
+51	193	0.782371038952	0
+51	193	0.782371038952	0.075
+51	200	0.782723038952	0.005
+51	200	0.782723038952	0
+51	200	0.782723038952	5e-06
+51	200	0.782723038952	5e-06
+51	200	0.782723038952	5e-06
+51	221	0.905163038952	0
+51	221	0.905163038952	0.05
+51	230	0.906859038952	5e-06
+51	243	0.909339038952	0.05
+51	252	0.911035038952	5e-06
+51	265	0.913835038952	0.05
+51	274	0.915531038952	5e-06
+51	288	0.918651038952	0.05
+51	297	0.920347038952	5e-06
+51	319	1.029843038952	0.05
+51	328	1.031539038952	5e-06
+51	341	1.033379038952	0.05
+51	350	1.035075038952	5e-06
+51	363	1.035955038952	0.05
+51	372	1.037651038952	5e-06
+51	385	1.038851038952	0.05
+51	394	1.040547038952	5e-06
+51	415	1.155163038952	0.05
+51	424	1.156859038952	5e-06
+51	425	1.156859038952	0
+51	425	1.156859038952	0
+51	425	1.156859038952	0.005
+51	425	1.156859038952	0.005
+51	435	1.157051038952	0
+51	435	1.157051038952	0.075
+51	442	1.157403038952	0.005
+51	442	1.157403038952	0
+51	442	1.157403038952	5e-06
+51	442	1.157403038952	5e-06
+51	442	1.157403038952	5e-06
+51	463	1.281443038952	0
+51	463	1.281443038952	0.05
+51	472	1.283139038952	5e-06
+51	489	1.28333206713	5e-06
+51	512	1.404523038952	0
+51	512	1.404523038952	0.05
+51	521	1.406219038952	5e-06
+51	534	1.407419038952	0.05
+51	543	1.409115038952	5e-06
+51	556	1.410315038952	0.05
+51	565	1.412011038952	5e-06
+51	578	1.415131038952	0.05
+51	588	1.416827038952	5e-06
+51	608	1.531443038952	0.05
+51	617	1.533139038952	5e-06
+51	630	1.534659038952	0.05
+51	639	1.536355038952	5e-06
+51	652	1.538515038952	0.05
+51	661	1.540211038952	5e-06
+51	675	1.543331038952	0.05
+51	688	1.545027038952	5e-06
+51	705	1.547123778724	0.05
+51	720	1.548819778724	5e-06
+51	726	1.549011815896	0.05
+51	735	1.549363815896	5e-06
+51	756	1.646854642503	0.05
+52	0	0	0
+52	0	0	0
+52	0	0	2
+52	475	1.283139094632	3
+52	490	1.283683094632	2
+53	0	0	0
+53	0	0	0
+53	0	0	0
+53	0	0	5e-06
+53	24	0.545523677729	0
+53	24	0.545523677729	0.05
+53	37	0.547219677729	5e-06
+53	48	0.547411871576	0.05
+53	58	0.547763871576	5e-06
+53	75	0.646534586823	0.05
+53	87	0.648230586823	5e-06
+53	98	0.648422878368	0.05
+53	108	0.648774878368	5e-06
+53	124	0.654203094632	0.05
+53	137	0.655899094632	5e-06
+53	147	0.65609201145	5e-06
+53	174	0.780483094632	0
+53	174	0.780483094632	0.05
+53	187	0.782179094632	5e-06
+53	197	0.78237201145	5e-06
+53	222	0.905163094632	0
+53	222	0.905163094632	0.05
+53	232	0.906859094632	5e-06
+53	244	0.909339094632	0.05
+53	254	0.911035094632	5e-06
+53	266	0.913835094632	0.05
+53	276	0.915531094632	5e-06
+53	289	0.918651094632	0.05
+53	299	0.920347094632	5e-06
+53	320	1.029843094632	0.05
+53	330	1.031539094632	5e-06
+53	342	1.033379094632	0.05
+53	352	1.035075094632	5e-06
+53	364	1.035955094632	0.05
+53	374	1.037651094632	5e-06
+53	386	1.038851094632	0.05
+53	396	1.040547094632	5e-06
+53	416	1.155163094632	0.05
+53	429	1.156859094632	5e-06
+53	439	1.15705201145	5e-06
+53	464	1.281443094632	0
+53	464	1.281443094632	0.05
+53	474	1.283139094632	5e-06
+53	475	1.283139094632	0
+53	475	1.283139094632	0
+53	475	1.283139094632	0.005
+53	475	1.283139094632	0.005
+53	483	1.283331094632	0
+53	483	1.283331094632	0.075
+53	490	1.283683094632	0.005
+53	490	1.283683094632	0
+53	490	1.283683094632	5e-06
+53	490	1.283683094632	5e-06
+53	490	1.283683094632	5e-06
+53	513	1.404523094632	0
+53	513	1.404523094632	0.05
+53	523	1.406219094632	5e-06
+53	535	1.407419094632	0.05
+53	545	1.409115094632	5e-06
+53	557	1.410315094632	0.05
+53	567	1.412011094632	5e-06
+53	579	1.415131094632	0.05
+53	590	1.416827094632	5e-06
+53	609	1.531443094632	0.05
+53	619	1.533139094632	5e-06
+53	631	1.534659094632	0.05
+53	641	1.536355094632	5e-06
+53	653	1.538515094632	0.05
+53	663	1.540211094632	5e-06
+53	676	1.543331094632	0.05
+53	690	1.545027094632	5e-06
+53	703	1.547123677729	0.05
+53	716	1.548819677729	5e-06
+53	727	1.549011871576	0.05
+53	737	1.549363871576	5e-06
+53	755	1.646854586823	0.05
+54	0	0	0
+54	0	0	0
+54	0	0	2
+54	29	0.547219344165	3
+54	51	0.547763344165	2
+54	81	0.648230350957	3
+54	101	0.648774350957	2
+54	119	0.654010567221	3
+54	127	0.655898567221	2
+54	169	0.780290567221	3
+54	177	0.782178567221	2
+54	217	0.904970567221	3
+54	225	0.906858567221	2
+54	239	0.909146567221	3
+54	247	0.911034567221	2
+54	261	0.913642567221	3
+54	269	0.915530567221	2
+54	284	0.918458567221	3
+54	292	0.920346567221	2
+54	315	1.029650567221	3
+54	323	1.031538567221	2
+54	337	1.033186567221	3
+54	345	1.035074567221	2
+54	359	1.035762567221	3
+54	367	1.037650567221	2
+54	381	1.038658567221	3
+54	389	1.040546567221	2
+54	411	1.154970567221	3
+54	419	1.156858567221	2
+54	459	1.281250567221	3
+54	467	1.283138567221	2
+54	508	1.404330567221	3
+54	516	1.406218567221	2
+54	530	1.407226567221	3
+54	538	1.409114567221	2
+54	552	1.410122567221	3
+54	560	1.412010567221	2
+54	574	1.414938567221	3
+54	583	1.416826567221	2
+54	604	1.531250567221	3
+54	612	1.533138567221	2
+54	626	1.534466567221	3
+54	634	1.536354567221	2
+54	648	1.538322567221	3
+54	656	1.540210567221	2
+54	670	1.543138567221	3
+54	683	1.545026567221	2
+54	708	1.548819344165	3
+54	730	1.549363344165	2
+55	0	0	0
+55	0	0	0
+55	0	0	0
+55	0	0	5e-06
+55	21	0.545523344165	0
+55	21	0.545523344165	0.05
+55	28	0.547219344165	5e-06
+55	29	0.547219344165	0
+55	29	0.547219344165	0
+55	29	0.547219344165	0.005
+55	29	0.547219344165	0.005
+55	44	0.547411344165	0
+55	44	0.547411344165	0.075
+55	51	0.547763344165	0.005
+55	51	0.547763344165	0
+55	51	0.547763344165	5e-06
+55	51	0.547763344165	5e-06
+55	51	0.547763344165	5e-06
+55	73	0.646534350957	0
+55	73	0.646534350957	0.05
+55	80	0.648230350957	5e-06
+55	81	0.648230350957	0
+55	81	0.648230350957	0
+55	81	0.648230350957	0.005
+55	81	0.648230350957	0.005
+55	94	0.648422350957	0
+55	94	0.648422350957	0.075
+55	101	0.648774350957	0.005
+55	101	0.648774350957	0
+55	101	0.648774350957	5e-06
+55	101	0.648774350957	5e-06
+55	101	0.648774350957	5e-06
+55	119	0.654010567221	0
+55	119	0.654010567221	0
+55	119	0.654010567221	0.005
+55	120	0.654202567221	0
+55	120	0.654202567221	0.075
+55	127	0.655898567221	0.005
+55	127	0.655898567221	0
+55	127	0.655898567221	5e-06
+55	127	0.655898567221	5e-06
+55	127	0.655898567221	5e-06
+55	144	0.656091510683	0
+55	144	0.656091510683	0.05
+55	151	0.656443510683	5e-06
+55	169	0.780290567221	0
+55	169	0.780290567221	0
+55	169	0.780290567221	0.005
+55	169	0.780290567221	0.005
+55	170	0.780482567221	0
+55	170	0.780482567221	0.075
+55	177	0.782178567221	0.005
+55	177	0.782178567221	0
+55	177	0.782178567221	5e-06
+55	177	0.782178567221	5e-06
+55	177	0.782178567221	5e-06
+55	194	0.782371510683	0
+55	194	0.782371510683	0.05
+55	201	0.782723510683	5e-06
+55	217	0.904970567221	0
+55	217	0.904970567221	0
+55	217	0.904970567221	0.005
+55	217	0.904970567221	0.005
+55	218	0.905162567221	0
+55	218	0.905162567221	0.075
+55	225	0.906858567221	0.005
+55	225	0.906858567221	0
+55	225	0.906858567221	5e-06
+55	225	0.906858567221	5e-06
+55	225	0.906858567221	5e-06
+55	239	0.909146567221	0
+55	239	0.909146567221	0
+55	239	0.909146567221	0.005
+55	240	0.909338567221	0
+55	240	0.909338567221	0.075
+55	247	0.911034567221	0.005
+55	247	0.911034567221	0
+55	247	0.911034567221	5e-06
+55	247	0.911034567221	5e-06
+55	247	0.911034567221	5e-06
+55	261	0.913642567221	0
+55	261	0.913642567221	0
+55	261	0.913642567221	0.005
+55	262	0.913834567221	0
+55	262	0.913834567221	0.075
+55	269	0.915530567221	0.005
+55	269	0.915530567221	0
+55	269	0.915530567221	5e-06
+55	269	0.915530567221	5e-06
+55	269	0.915530567221	5e-06
+55	284	0.918458567221	0
+55	284	0.918458567221	0
+55	284	0.918458567221	0.005
+55	285	0.918650567221	0
+55	285	0.918650567221	0.075
+55	292	0.920346567221	0.005
+55	292	0.920346567221	0
+55	292	0.920346567221	5e-06
+55	292	0.920346567221	5e-06
+55	292	0.920346567221	5e-06
+55	315	1.029650567221	0
+55	315	1.029650567221	0
+55	315	1.029650567221	0.005
+55	316	1.029842567221	0
+55	316	1.029842567221	0.075
+55	323	1.031538567221	0.005
+55	323	1.031538567221	0
+55	323	1.031538567221	5e-06
+55	323	1.031538567221	5e-06
+55	323	1.031538567221	5e-06
+55	337	1.033186567221	0
+55	337	1.033186567221	0
+55	337	1.033186567221	0.005
+55	338	1.033378567221	0
+55	338	1.033378567221	0.075
+55	345	1.035074567221	0.005
+55	345	1.035074567221	0
+55	345	1.035074567221	5e-06
+55	345	1.035074567221	5e-06
+55	345	1.035074567221	5e-06
+55	359	1.035762567221	0
+55	359	1.035762567221	0
+55	359	1.035762567221	0.005
+55	360	1.035954567221	0
+55	360	1.035954567221	0.075
+55	367	1.037650567221	0.005
+55	367	1.037650567221	0
+55	367	1.037650567221	5e-06
+55	367	1.037650567221	5e-06
+55	367	1.037650567221	5e-06
+55	381	1.038658567221	0
+55	381	1.038658567221	0
+55	381	1.038658567221	0.005
+55	382	1.038850567221	0
+55	382	1.038850567221	0.075
+55	389	1.040546567221	0.005
+55	389	1.040546567221	0
+55	389	1.040546567221	5e-06
+55	389	1.040546567221	5e-06
+55	389	1.040546567221	5e-06
+55	411	1.154970567221	0
+55	411	1.154970567221	0
+55	411	1.154970567221	0.005
+55	412	1.155162567221	0
+55	412	1.155162567221	0.075
+55	419	1.156858567221	0.005
+55	419	1.156858567221	0
+55	419	1.156858567221	5e-06
+55	419	1.156858567221	5e-06
+55	419	1.156858567221	5e-06
+55	436	1.157051510683	0
+55	436	1.157051510683	0.05
+55	443	1.157403510683	5e-06
+55	459	1.281250567221	0
+55	459	1.281250567221	0
+55	459	1.281250567221	0.005
+55	459	1.281250567221	0.005
+55	460	1.281442567221	0
+55	460	1.281442567221	0.075
+55	467	1.283138567221	0.005
+55	467	1.283138567221	0
+55	467	1.283138567221	5e-06
+55	467	1.283138567221	5e-06
+55	467	1.283138567221	5e-06
+55	487	1.283331622043	0
+55	487	1.283331622043	0.05
+55	497	1.283683622043	5e-06
+55	508	1.404330567221	0
+55	508	1.404330567221	0
+55	508	1.404330567221	0.005
+55	508	1.404330567221	0.005
+55	509	1.404522567221	0
+55	509	1.404522567221	0.075
+55	516	1.406218567221	0.005
+55	516	1.406218567221	0
+55	516	1.406218567221	5e-06
+55	516	1.406218567221	5e-06
+55	516	1.406218567221	5e-06
+55	530	1.407226567221	0
+55	530	1.407226567221	0
+55	530	1.407226567221	0.005
+55	531	1.407418567221	0
+55	531	1.407418567221	0.075
+55	538	1.409114567221	0.005
+55	538	1.409114567221	0
+55	538	1.409114567221	5e-06
+55	538	1.409114567221	5e-06
+55	538	1.409114567221	5e-06
+55	552	1.410122567221	0
+55	552	1.410122567221	0
+55	552	1.410122567221	0.005
+55	553	1.410314567221	0
+55	553	1.410314567221	0.075
+55	560	1.412010567221	0.005
+55	560	1.412010567221	0
+55	560	1.412010567221	5e-06
+55	560	1.412010567221	5e-06
+55	560	1.412010567221	5e-06
+55	574	1.414938567221	0
+55	574	1.414938567221	0
+55	574	1.414938567221	0.005
+55	575	1.415130567221	0
+55	575	1.415130567221	0.075
+55	583	1.416826567221	0.005
+55	583	1.416826567221	0
+55	583	1.416826567221	5e-06
+55	583	1.416826567221	5e-06
+55	583	1.416826567221	5e-06
+55	604	1.531250567221	0
+55	604	1.531250567221	0
+55	604	1.531250567221	0.005
+55	605	1.531442567221	0
+55	605	1.531442567221	0.075
+55	612	1.533138567221	0.005
+55	612	1.533138567221	0
+55	612	1.533138567221	5e-06
+55	612	1.533138567221	5e-06
+55	612	1.533138567221	5e-06
+55	626	1.534466567221	0
+55	626	1.534466567221	0
+55	626	1.534466567221	0.005
+55	627	1.534658567221	0
+55	627	1.534658567221	0.075
+55	634	1.536354567221	0.005
+55	634	1.536354567221	0
+55	634	1.536354567221	5e-06
+55	634	1.536354567221	5e-06
+55	634	1.536354567221	5e-06
+55	648	1.538322567221	0
+55	648	1.538322567221	0
+55	648	1.538322567221	0.005
+55	649	1.538514567221	0
+55	649	1.538514567221	0.075
+55	656	1.540210567221	0.005
+55	656	1.540210567221	0
+55	656	1.540210567221	5e-06
+55	656	1.540210567221	5e-06
+55	656	1.540210567221	5e-06
+55	670	1.543138567221	0
+55	670	1.543138567221	0
+55	670	1.543138567221	0.005
+55	672	1.543330567221	0
+55	672	1.543330567221	0.075
+55	683	1.545026567221	0.005
+55	683	1.545026567221	0
+55	683	1.545026567221	5e-06
+55	683	1.545026567221	5e-06
+55	683	1.545026567221	5e-06
+55	700	1.547123344165	0
+55	700	1.547123344165	0.05
+55	707	1.548819344165	5e-06
+55	708	1.548819344165	0
+55	708	1.548819344165	0
+55	708	1.548819344165	0.005
+55	708	1.548819344165	0.005
+55	723	1.549011344165	0
+55	723	1.549011344165	0.075
+55	730	1.549363344165	0.005
+55	730	1.549363344165	0
+55	730	1.549363344165	5e-06
+55	730	1.549363344165	5e-06
+55	730	1.549363344165	5e-06
+55	753	1.646854350957	0
+55	753	1.646854350957	0.05
+56	0	0	1
+56	23	0.545523649114	3
+56	35	0.547219649114	1
+56	49	0.547411945506	3
+56	60	0.547763945506	1
+56	99	0.648422952298	3
+56	110	0.648774952298	1
+56	125	0.654203168562	3
+56	139	0.655899168562	1
+56	175	0.780483168562	3
+56	189	0.782179168562	1
+56	223	0.905163168562	3
+56	234	0.906859168562	1
+56	245	0.909339168562	3
+56	256	0.911035168562	1
+56	267	0.913835168562	3
+56	278	0.915531168562	1
+56	290	0.918651168562	3
+56	301	0.920347168562	1
+56	321	1.029843168562	3
+56	332	1.031539168562	1
+56	343	1.033379168562	3
+56	354	1.035075168562	1
+56	365	1.035955168562	3
+56	376	1.037651168562	1
+56	387	1.038851168562	3
+56	398	1.040547168562	1
+56	417	1.155163168562	3
+56	431	1.156859168562	1
+56	465	1.281443168562	3
+56	479	1.283139168562	1
+56	484	1.283331467568	3
+56	491	1.283683467568	1
+56	514	1.404523168562	3
+56	525	1.406219168562	1
+56	536	1.407419168562	3
+56	547	1.409115168562	1
+56	558	1.410315168562	3
+56	569	1.412011168562	1
+56	580	1.415131168562	3
+56	592	1.416827168562	1
+56	610	1.531443168562	3
+56	621	1.533139168562	1
+56	632	1.534659168562	3
+56	643	1.536355168562	1
+56	654	1.538515168562	3
+56	665	1.540211168562	1
+56	677	1.543331168562	3
+56	692	1.545027168562	1
+56	702	1.547123649114	3
+56	714	1.548819649114	1
+56	728	1.549011945506	3
+56	739	1.549363945506	1
+57	0	0	1
+57	19	0.545331177383	0
+57	27	0.547219177383	1
+57	45	0.547411510947	3
+57	52	0.547763510947	1
+57	74	0.646534488028	3
+57	85	0.648230488028	1
+57	95	0.648422517739	3
+57	102	0.648774517739	1
+57	121	0.654202734003	3
+57	128	0.655898734003	1
+57	146	0.656091640293	3
+57	155	0.656443640293	1
+57	171	0.780482734003	3
+57	178	0.782178734003	1
+57	196	0.782371640293	3
+57	205	0.782723640293	1
+57	219	0.905162734003	3
+57	226	0.906858734003	1
+57	241	0.909338734003	3
+57	248	0.911034734003	1
+57	263	0.913834734003	3
+57	270	0.915530734003	1
+57	286	0.918650734003	3
+57	293	0.920346734003	1
+57	317	1.029842734003	3
+57	324	1.031538734003	1
+57	339	1.033378734003	3
+57	346	1.035074734003	1
+57	361	1.035954734003	3
+57	368	1.037650734003	1
+57	383	1.038850734003	3
+57	390	1.040546734003	1
+57	413	1.155162734003	3
+57	420	1.156858734003	1
+57	438	1.157051640293	3
+57	447	1.157403640293	1
+57	461	1.281442734003	3
+57	468	1.283138734003	1
+57	486	1.283331594978	3
+57	495	1.283683594978	1
+57	510	1.404522734003	3
+57	517	1.406218734003	1
+57	532	1.407418734003	3
+57	539	1.409114734003	1
+57	554	1.410314734003	3
+57	561	1.412010734003	1
+57	576	1.415130734003	3
+57	584	1.416826734003	1
+57	606	1.531442734003	3
+57	613	1.533138734003	1
+57	628	1.534658734003	3
+57	635	1.536354734003	1
+57	650	1.538514734003	3
+57	657	1.540210734003	1
+57	673	1.543330734003	3
+57	684	1.545026734003	1
+57	698	1.546931177383	0
+57	706	1.548819177383	1
+57	724	1.549011510947	3
+57	731	1.549363510947	1
+57	754	1.646854488028	3
+58	0	0	1
+58	22	0.545523550319	3
+58	33	0.547219550319	1
+58	46	0.54741158003	3
+58	54	0.54776358003	1
+58	71	0.646342115092	0
+58	79	0.648230115092	1
+58	96	0.648422586822	3
+58	104	0.648774586822	1
+58	122	0.654202803086	3
+58	130	0.655898803086	1
+58	145	0.656091566363	3
+58	153	0.656443566363	1
+58	172	0.780482803086	3
+58	180	0.782178803086	1
+58	195	0.782371566363	3
+58	203	0.782723566363	1
+58	220	0.905162803086	3
+58	228	0.906858803086	1
+58	242	0.909338803086	3
+58	250	0.911034803086	1
+58	264	0.913834803086	3
+58	272	0.915530803086	1
+58	287	0.918650803086	3
+58	295	0.920346803086	1
+58	318	1.029842803086	3
+58	326	1.031538803086	1
+58	340	1.033378803086	3
+58	348	1.035074803086	1
+58	362	1.035954803086	3
+58	370	1.037650803086	1
+58	384	1.038850803086	3
+58	392	1.040546803086	1
+58	414	1.155162803086	3
+58	422	1.156858803086	1
+58	437	1.157051566363	3
+58	445	1.157403566363	1
+58	462	1.281442803086	3
+58	470	1.283138803086	1
+58	485	1.283331566363	3
+58	493	1.283683566363	1
+58	511	1.404522803086	3
+58	519	1.406218803086	1
+58	533	1.407418803086	3
+58	541	1.409114803086	1
+58	555	1.410314803086	3
+58	563	1.412010803086	1
+58	577	1.415130803086	3
+58	586	1.416826803086	1
+58	607	1.531442803086	3
+58	615	1.533138803086	1
+58	629	1.534658803086	3
+58	637	1.536354803086	1
+58	651	1.538514803086	3
+58	659	1.540210803086	1
+58	674	1.543330803086	3
+58	686	1.545026803086	1
+58	701	1.547123550319	3
+58	712	1.548819550319	1
+58	725	1.54901158003	3
+58	733	1.54936358003	1
+58	751	1.646662115092	0
+58	759	1.648550115092	1
+59	0	0	1
+59	25	0.545523704794	3
+59	39	0.547219704794	1
+59	704	1.547123704794	3
+59	718	1.548819704794	1
+60	0	0	1
+60	26	0.545523778724	3
+60	41	0.547219778724	1
+60	47	0.547411815896	3
+60	56	0.547763815896	1
+60	76	0.646534642503	3
+60	89	0.648230642503	1
+60	97	0.648422822688	3
+60	106	0.648774822688	1
+60	123	0.654203038952	3
+60	132	0.655899038952	1
+60	133	0.655899038952	0
+60	150	0.656443038952	1
+60	173	0.780483038952	3
+60	182	0.782179038952	1
+60	183	0.782179038952	0
+60	200	0.782723038952	1
+60	221	0.905163038952	3
+60	230	0.906859038952	1
+60	243	0.909339038952	3
+60	252	0.911035038952	1
+60	265	0.913835038952	3
+60	274	0.915531038952	1
+60	288	0.918651038952	3
+60	297	0.920347038952	1
+60	319	1.029843038952	3
+60	328	1.031539038952	1
+60	341	1.033379038952	3
+60	350	1.035075038952	1
+60	363	1.035955038952	3
+60	372	1.037651038952	1
+60	385	1.038851038952	3
+60	394	1.040547038952	1
+60	415	1.155163038952	3
+60	424	1.156859038952	1
+60	425	1.156859038952	0
+60	442	1.157403038952	1
+60	463	1.281443038952	3
+60	472	1.283139038952	1
+60	512	1.404523038952	3
+60	521	1.406219038952	1
+60	534	1.407419038952	3
+60	543	1.409115038952	1
+60	556	1.410315038952	3
+60	565	1.412011038952	1
+60	578	1.415131038952	3
+60	588	1.416827038952	1
+60	608	1.531443038952	3
+60	617	1.533139038952	1
+60	630	1.534659038952	3
+60	639	1.536355038952	1
+60	652	1.538515038952	3
+60	661	1.540211038952	1
+60	675	1.543331038952	3
+60	688	1.545027038952	1
+60	705	1.547123778724	3
+60	720	1.548819778724	1
+60	726	1.549011815896	3
+60	735	1.549363815896	1
+60	756	1.646854642503	3
+61	0	0	1
+61	24	0.545523677729	3
+61	37	0.547219677729	1
+61	48	0.547411871576	3
+61	58	0.547763871576	1
+61	75	0.646534586823	3
+61	87	0.648230586823	1
+61	98	0.648422878368	3
+61	108	0.648774878368	1
+61	124	0.654203094632	3
+61	137	0.655899094632	1
+61	174	0.780483094632	3
+61	187	0.782179094632	1
+61	222	0.905163094632	3
+61	232	0.906859094632	1
+61	244	0.909339094632	3
+61	254	0.911035094632	1
+61	266	0.913835094632	3
+61	276	0.915531094632	1
+61	289	0.918651094632	3
+61	299	0.920347094632	1
+61	320	1.029843094632	3
+61	330	1.031539094632	1
+61	342	1.033379094632	3
+61	352	1.035075094632	1
+61	364	1.035955094632	3
+61	374	1.037651094632	1
+61	386	1.038851094632	3
+61	396	1.040547094632	1
+61	416	1.155163094632	3
+61	429	1.156859094632	1
+61	464	1.281443094632	3
+61	474	1.283139094632	1
+61	475	1.283139094632	0
+61	490	1.283683094632	1
+61	513	1.404523094632	3
+61	523	1.406219094632	1
+61	535	1.407419094632	3
+61	545	1.409115094632	1
+61	557	1.410315094632	3
+61	567	1.412011094632	1
+61	579	1.415131094632	3
+61	590	1.416827094632	1
+61	609	1.531443094632	3
+61	619	1.533139094632	1
+61	631	1.534659094632	3
+61	641	1.536355094632	1
+61	653	1.538515094632	3
+61	663	1.540211094632	1
+61	676	1.543331094632	3
+61	690	1.545027094632	1
+61	703	1.547123677729	3
+61	716	1.548819677729	1
+61	727	1.549011871576	3
+61	737	1.549363871576	1
+61	755	1.646854586823	3
+62	0	0	1
+62	21	0.545523344165	3
+62	28	0.547219344165	1
+62	29	0.547219344165	0
+62	51	0.547763344165	1
+62	73	0.646534350957	3
+62	80	0.648230350957	1
+62	81	0.648230350957	0
+62	101	0.648774350957	1
+62	119	0.654010567221	0
+62	127	0.655898567221	1
+62	144	0.656091510683	3
+62	151	0.656443510683	1
+62	169	0.780290567221	0
+62	177	0.782178567221	1
+62	194	0.782371510683	3
+62	201	0.782723510683	1
+62	217	0.904970567221	0
+62	225	0.906858567221	1
+62	239	0.909146567221	0
+62	247	0.911034567221	1
+62	261	0.913642567221	0
+62	269	0.915530567221	1
+62	284	0.918458567221	0
+62	292	0.920346567221	1
+62	315	1.029650567221	0
+62	323	1.031538567221	1
+62	337	1.033186567221	0
+62	345	1.035074567221	1
+62	359	1.035762567221	0
+62	367	1.037650567221	1
+62	381	1.038658567221	0
+62	389	1.040546567221	1
+62	411	1.154970567221	0
+62	419	1.156858567221	1
+62	436	1.157051510683	3
+62	443	1.157403510683	1
+62	459	1.281250567221	0
+62	467	1.283138567221	1
+62	487	1.283331622043	3
+62	497	1.283683622043	1
+62	508	1.404330567221	0
+62	516	1.406218567221	1
+62	530	1.407226567221	0
+62	538	1.409114567221	1
+62	552	1.410122567221	0
+62	560	1.412010567221	1
+62	574	1.414938567221	0
+62	583	1.416826567221	1
+62	604	1.531250567221	0
+62	612	1.533138567221	1
+62	626	1.534466567221	0
+62	634	1.536354567221	1
+62	648	1.538322567221	0
+62	656	1.540210567221	1
+62	670	1.543138567221	0
+62	683	1.545026567221	1
+62	700	1.547123344165	3
+62	707	1.548819344165	1
+62	708	1.548819344165	0
+62	730	1.549363344165	1
+62	753	1.646854350957	3
+63	13	0.544883177383	10
+63	679	1.544883177383	10
+64	15	0.544883177383	18
+64	680	1.544883177383	18
+65	17	0.544883177383	304
+65	682	1.544883177383	304
+66	17	0.1	0
+66	17	0.2	0
+66	17	0.3	0
+66	17	0.4	0
+66	17	0.5	0
+66	682	0.6	3040
+66	682	0.7	0
+66	682	0.8	0
+66	682	0.9	0
+66	682	1	0
+66	682	1.1	0
+66	682	1.2	0
+66	682	1.3	0
+66	682	1.4	0
+66	682	1.5	0
+67	19	0.545331177383	-2.726655886915e-06
+67	20	0.545523177383	-3.686655886915e-06
+67	27	0.547219177383	-0.00013088665588691
+67	45	0.547411510947	-0.00013088761755473
+67	52	0.547763510947	-0.00014848761755473
+67	74	0.646534488028	-0.00014898147244014
+67	85	0.648230488028	-0.00023378147244014
+67	95	0.648422517739	-0.00023378243258869
+67	102	0.648774517739	-0.00025138243258869
+67	121	0.654202734003	-0.00025140957367001
+67	128	0.655898734003	-0.00033620957367001
+67	146	0.656091640293	-0.00033621053820146
+67	155	0.656443640293	-0.00035381053820146
+67	171	0.780482734003	-0.00035443073367001
+67	178	0.782178734003	-0.00043923073367001
+67	196	0.782371640293	-0.00043923169820146
+67	205	0.782723640293	-0.00045683169820146
+67	219	0.905162734003	-0.00045744389367001
+67	226	0.906858734003	-0.00054224389367001
+67	241	0.909338734003	-0.00054225629367001
+67	248	0.911034734003	-0.00062705629367001
+67	263	0.913834734003	-0.00062707029367001
+67	270	0.915530734003	-0.00071187029367001
+67	286	0.918650734003	-0.00071188589367001
+67	293	0.920346734003	-0.00079668589367001
+67	317	1.029842734003	-0.00079723337367001
+67	324	1.031538734003	-0.00088203337367001
+67	339	1.033378734003	-0.00088204257367001
+67	346	1.035074734003	-0.00096684257367001
+67	361	1.035954734003	-0.00096684697367001
+67	368	1.037650734003	-0.00105164697367
+67	383	1.038850734003	-0.00105165297367
+67	390	1.040546734003	-0.00113645297367
+67	413	1.155162734003	-0.00113702605367
+67	420	1.156858734003	-0.00122182605367
+67	438	1.157051640293	-0.0012218270182015
+67	447	1.157403640293	-0.0012394270182015
+67	461	1.281442734003	-0.00124004721367
+67	468	1.283138734003	-0.00132484721367
+67	486	1.283331594978	-0.0013248481779749
+67	495	1.283683594978	-0.0013424481779749
+67	510	1.404522734003	-0.00134305237367
+67	517	1.406218734003	-0.00142785237367
+67	532	1.407418734003	-0.00142785837367
+67	539	1.409114734003	-0.00151265837367
+67	554	1.410314734003	-0.00151266437367
+67	561	1.412010734003	-0.00159746437367
+67	576	1.415130734003	-0.00159747997367
+67	584	1.416826734003	-0.00168227997367
+67	606	1.531442734003	-0.00168285305367
+67	613	1.533138734003	-0.00176765305367
+67	628	1.534658734003	-0.00176766065367
+67	635	1.536354734003	-0.00185246065367
+67	650	1.538514734003	-0.00185247145367
+67	657	1.540210734003	-0.00193727145367
+67	673	1.543330734003	-0.00193728705367
+67	684	1.545026734003	-0.00202208705367
+67	698	1.546931177383	-0.0020220965758869
+67	699	1.547123177383	-0.0020230565758869
+67	706	1.548819177383	-0.0021502565758869
+67	724	1.549011510947	-0.0021502575375547
+67	731	1.549363510947	-0.0021678575375547
+67	754	1.646854488028	-0.0021683449924401
+68	19	0.545331177383	1
+68	20	0.545523177383	2
+68	27	0.547219177383	1
+68	27	0.547219177383	0
+68	698	1.546931177383	1
+68	699	1.547123177383	2
+68	706	1.548819177383	1
+68	706	1.548819177383	0
+69	19	0.545331177383	0.000448
+69	698	1.546931177383	0.002048
+70	19	0.545331177383	304
+70	698	1.546931177383	304
+71	19	0.1	0
+71	19	0.2	0
+71	19	0.3	0
+71	19	0.4	0
+71	19	0.5	0
+71	698	0.6	3040
+71	698	0.7	0
+71	698	0.8	0
+71	698	0.9	0
+71	698	1	0
+71	698	1.1	0
+71	698	1.2	0
+71	698	1.3	0
+71	698	1.4	0
+71	698	1.5	0
+72	21	0.545523344165	-2.727616720825e-06
+72	28	0.547219344165	-8.7527616720825e-05
+72	44	0.547411344165	-8.8487616720825e-05
+72	51	0.547763344165	-0.00011488761672083
+72	73	0.646534350957	-0.00011538147175479
+72	80	0.648230350957	-0.00020018147175478
+72	94	0.648422350957	-0.00020114147175478
+72	101	0.648774350957	-0.00022754147175478
+72	119	0.654010567221	-0.0002275676528361
+72	120	0.654202567221	-0.0002285276528361
+72	127	0.655898567221	-0.0003557276528361
+72	144	0.656091510683	-0.00035572861755341
+72	151	0.656443510683	-0.00037332861755341
+72	169	0.780290567221	-0.0003739478528361
+72	170	0.780482567221	-0.0003749078528361
+72	177	0.782178567221	-0.00050210785283611
+72	194	0.782371510683	-0.00050210881755342
+72	201	0.782723510683	-0.00051970881755342
+72	217	0.904970567221	-0.00052032005283611
+72	218	0.905162567221	-0.00052128005283611
+72	225	0.906858567221	-0.00064848005283611
+72	239	0.909146567221	-0.00064849149283611
+72	240	0.909338567221	-0.00064945149283611
+72	247	0.911034567221	-0.00077665149283611
+72	261	0.913642567221	-0.00077666453283611
+72	262	0.913834567221	-0.00077762453283611
+72	269	0.915530567221	-0.00090482453283611
+72	284	0.918458567221	-0.00090483917283611
+72	285	0.918650567221	-0.00090579917283611
+72	292	0.920346567221	-0.0010329991728361
+72	315	1.029650567221	-0.0010335456928361
+72	316	1.029842567221	-0.0010345056928361
+72	323	1.031538567221	-0.0011617056928361
+72	337	1.033186567221	-0.0011617139328361
+72	338	1.033378567221	-0.0011626739328361
+72	345	1.035074567221	-0.0012898739328361
+72	359	1.035762567221	-0.0012898773728361
+72	360	1.035954567221	-0.0012908373728361
+72	367	1.037650567221	-0.0014180373728361
+72	381	1.038658567221	-0.0014180424128361
+72	382	1.038850567221	-0.0014190024128361
+72	389	1.040546567221	-0.0015462024128361
+72	411	1.154970567221	-0.0015467745328361
+72	412	1.155162567221	-0.0015477345328361
+72	419	1.156858567221	-0.0016749345328361
+72	436	1.157051510683	-0.0016749354975534
+72	443	1.157403510683	-0.0016925354975534
+72	459	1.281250567221	-0.0016931547328361
+72	460	1.281442567221	-0.0016941147328361
+72	467	1.283138567221	-0.0018213147328361
+72	487	1.283331622043	-0.0018213156981102
+72	497	1.283683622043	-0.0018389156981102
+72	508	1.404330567221	-0.0018395189328361
+72	509	1.404522567221	-0.0018404789328361
+72	516	1.406218567221	-0.0019676789328361
+72	530	1.407226567221	-0.0019676839728361
+72	531	1.407418567221	-0.0019686439728361
+72	538	1.409114567221	-0.0020958439728361
+72	552	1.410122567221	-0.0020958490128361
+72	553	1.410314567221	-0.0020968090128361
+72	560	1.412010567221	-0.0022240090128361
+72	574	1.414938567221	-0.0022240236528361
+72	575	1.415130567221	-0.0022249836528361
+72	583	1.416826567221	-0.0023521836528361
+72	604	1.531250567221	-0.0023527557728361
+72	605	1.531442567221	-0.0023537157728361
+72	612	1.533138567221	-0.0024809157728361
+72	626	1.534466567221	-0.0024809224128361
+72	627	1.534658567221	-0.0024818824128361
+72	634	1.536354567221	-0.0026090824128361
+72	648	1.538322567221	-0.0026090922528361
+72	649	1.538514567221	-0.0026100522528361
+72	656	1.540210567221	-0.0027372522528361
+72	670	1.543138567221	-0.0027372668928361
+72	672	1.543330567221	-0.0027382268928361
+72	683	1.545026567221	-0.0028654268928361
+72	700	1.547123344165	-0.0028654373767208
+72	707	1.548819344165	-0.0029502373767208
+72	723	1.549011344165	-0.0029511973767208
+72	730	1.549363344165	-0.0029775973767208
+72	753	1.646854350957	-0.0029780848317548
+73	22	0.545523550319	-2.727617751595e-06
+73	33	0.547219550319	-8.7527617751595e-05
+73	46	0.54741158003	-8.752857790015e-05
+73	54	0.54776358003	-0.00010512857790015
+73	71	0.646342115092	-0.00010562147057546
+73	72	0.646534115092	-0.00010658147057546
+73	79	0.648230115092	-0.00023378147057546
+73	96	0.648422586822	-0.00023378243293411
+73	104	0.648774586822	-0.00025138243293411
+73	122	0.654202803086	-0.00025140957401543
+73	130	0.655898803086	-0.00033620957401543
+73	145	0.656091566363	-0.00033621053783182
+73	153	0.656443566363	-0.00035381053783182
+73	172	0.780482803086	-0.00035443073401543
+73	180	0.782178803086	-0.00043923073401543
+73	195	0.782371566363	-0.00043923169783182
+73	203	0.782723566363	-0.00045683169783182
+73	220	0.905162803086	-0.00045744389401543
+73	228	0.906858803086	-0.00054224389401543
+73	242	0.909338803086	-0.00054225629401543
+73	250	0.911034803086	-0.00062705629401543
+73	264	0.913834803086	-0.00062707029401543
+73	272	0.915530803086	-0.00071187029401543
+73	287	0.918650803086	-0.00071188589401543
+73	295	0.920346803086	-0.00079668589401543
+73	318	1.029842803086	-0.00079723337401543
+73	326	1.031538803086	-0.00088203337401543
+73	340	1.033378803086	-0.00088204257401543
+73	348	1.035074803086	-0.00096684257401543
+73	362	1.035954803086	-0.00096684697401543
+73	370	1.037650803086	-0.0010516469740154
+73	384	1.038850803086	-0.0010516529740154
+73	392	1.040546803086	-0.0011364529740154
+73	414	1.155162803086	-0.0011370260540154
+73	422	1.156858803086	-0.0012218260540154
+73	437	1.157051566363	-0.0012218270178318
+73	445	1.157403566363	-0.0012394270178318
+73	462	1.281442803086	-0.0012400472140154
+73	470	1.283138803086	-0.0013248472140154
+73	485	1.283331566363	-0.0013248481778318
+73	493	1.283683566363	-0.0013424481778318
+73	511	1.404522803086	-0.0013430523740154
+73	519	1.406218803086	-0.0014278523740154
+73	533	1.407418803086	-0.0014278583740154
+73	541	1.409114803086	-0.0015126583740154
+73	555	1.410314803086	-0.0015126643740154
+73	563	1.412010803086	-0.0015974643740154
+73	577	1.415130803086	-0.0015974799740154
+73	586	1.416826803086	-0.0016822799740154
+73	607	1.531442803086	-0.0016828530540154
+73	615	1.533138803086	-0.0017676530540154
+73	629	1.534658803086	-0.0017676606540154
+73	637	1.536354803086	-0.0018524606540154
+73	651	1.538514803086	-0.0018524714540154
+73	659	1.540210803086	-0.0019372714540154
+73	674	1.543330803086	-0.0019372870540154
+73	686	1.545026803086	-0.0020220870540154
+73	701	1.547123550319	-0.0020220975377516
+73	712	1.548819550319	-0.0021068975377516
+73	725	1.54901158003	-0.0021068984979001
+73	733	1.54936358003	-0.0021244984979001
+73	751	1.646662115092	-0.0021249849905755
+73	752	1.646854115092	-0.0021259449905755
+73	759	1.648550115092	-0.0022531449905755
+74	23	0.545523649114	-2.72761824557e-06
+74	35	0.547219649114	-8.752761824557e-05
+74	49	0.547411945506	-8.752857972753e-05
+74	60	0.547763945506	-0.00010512857972753
+74	77	0.646534802752	-0.00010562243401376
+74	99	0.648422952298	-0.00010563187476149
+74	110	0.648774952298	-0.00012323187476149
+74	125	0.654203168562	-0.00012325901584281
+74	139	0.655899168562	-0.00020805901584281
+74	149	0.656092106878	-0.00020805998053439
+74	175	0.780483168562	-0.00020868193584281
+74	189	0.782179168562	-0.00029348193584281
+74	199	0.782372106878	-0.00029348290053439
+74	223	0.905163168562	-0.00029409685584281
+74	234	0.906859168562	-0.00037889685584281
+74	245	0.909339168562	-0.00037890925584281
+74	256	0.911035168562	-0.00046370925584281
+74	267	0.913835168562	-0.00046372325584281
+74	278	0.915531168562	-0.00054852325584281
+74	290	0.918651168562	-0.00054853885584281
+74	301	0.920347168562	-0.00063333885584281
+74	321	1.029843168562	-0.00063388633584281
+74	332	1.031539168562	-0.00071868633584281
+74	343	1.033379168562	-0.00071869553584281
+74	354	1.035075168562	-0.00080349553584281
+74	365	1.035955168562	-0.00080349993584281
+74	376	1.037651168562	-0.00088829993584281
+74	387	1.038851168562	-0.00088830593584281
+74	398	1.040547168562	-0.00097310593584281
+74	417	1.155163168562	-0.00097367901584281
+74	431	1.156859168562	-0.0010584790158428
+74	441	1.157052106878	-0.0010584799805344
+74	465	1.281443168562	-0.0010591019358428
+74	479	1.283139168562	-0.0011439019358428
+74	484	1.283331467568	-0.0011439028973378
+74	491	1.283683467568	-0.0011615028973378
+74	514	1.404523168562	-0.0011621070958428
+74	525	1.406219168562	-0.0012469070958428
+74	536	1.407419168562	-0.0012469130958428
+74	547	1.409115168562	-0.0013317130958428
+74	558	1.410315168562	-0.0013317190958428
+74	569	1.412011168562	-0.0014165190958428
+74	580	1.415131168562	-0.0014165346958428
+74	592	1.416827168562	-0.0015013346958428
+74	610	1.531443168562	-0.0015019077758428
+74	621	1.533139168562	-0.0015867077758428
+74	632	1.534659168562	-0.0015867153758428
+74	643	1.536355168562	-0.0016715153758428
+74	654	1.538515168562	-0.0016715261758428
+74	665	1.540211168562	-0.0017563261758428
+74	677	1.543331168562	-0.0017563417758428
+74	692	1.545027168562	-0.0018411417758428
+74	702	1.547123649114	-0.0018411522582456
+74	714	1.548819649114	-0.0019259522582456
+74	728	1.549011945506	-0.0019259532197275
+74	739	1.549363945506	-0.0019435532197275
+74	757	1.646854802752	-0.0019440406740138
+75	24	0.545523677729	-2.727618388645e-06
+75	37	0.547219677729	-8.7527618388645e-05
+75	48	0.547411871576	-8.752857935788e-05
+75	58	0.547763871576	-0.00010512857935788
+75	75	0.646534586823	-0.00010562243293411
+75	87	0.648230586823	-0.00019042243293411
+75	98	0.648422878368	-0.00019042339439184
+75	108	0.648774878368	-0.00020802339439184
+75	124	0.654203094632	-0.00020805053547316
+75	137	0.655899094632	-0.00029285053547316
+75	147	0.65609201145	-0.00029285150005725
+75	174	0.780483094632	-0.00029347345547316
+75	187	0.782179094632	-0.00037827345547316
+75	197	0.78237201145	-0.00037827442005725
+75	222	0.905163094632	-0.00037888837547316
+75	232	0.906859094632	-0.00046368837547316
+75	244	0.909339094632	-0.00046370077547316
+75	254	0.911035094632	-0.00054850077547316
+75	266	0.913835094632	-0.00054851477547316
+75	276	0.915531094632	-0.00063331477547316
+75	289	0.918651094632	-0.00063333037547316
+75	299	0.920347094632	-0.00071813037547316
+75	320	1.029843094632	-0.00071867785547316
+75	330	1.031539094632	-0.00080347785547316
+75	342	1.033379094632	-0.00080348705547316
+75	352	1.035075094632	-0.00088828705547316
+75	364	1.035955094632	-0.00088829145547316
+75	374	1.037651094632	-0.00097309145547316
+75	386	1.038851094632	-0.00097309745547316
+75	396	1.040547094632	-0.0010578974554732
+75	416	1.155163094632	-0.0010584705354732
+75	429	1.156859094632	-0.0011432705354732
+75	439	1.15705201145	-0.0011432715000572
+75	464	1.281443094632	-0.0011438934554732
+75	474	1.283139094632	-0.0012286934554732
+75	483	1.283331094632	-0.0012296534554732
+75	490	1.283683094632	-0.0012560534554732
+75	513	1.404523094632	-0.0012566576554732
+75	523	1.406219094632	-0.0013414576554732
+75	535	1.407419094632	-0.0013414636554732
+75	545	1.409115094632	-0.0014262636554732
+75	557	1.410315094632	-0.0014262696554732
+75	567	1.412011094632	-0.0015110696554732
+75	579	1.415131094632	-0.0015110852554732
+75	590	1.416827094632	-0.0015958852554732
+75	609	1.531443094632	-0.0015964583354732
+75	619	1.533139094632	-0.0016812583354732
+75	631	1.534659094632	-0.0016812659354732
+75	641	1.536355094632	-0.0017660659354732
+75	653	1.538515094632	-0.0017660767354732
+75	663	1.540211094632	-0.0018508767354732
+75	676	1.543331094632	-0.0018508923354732
+75	690	1.545027094632	-0.0019356923354732
+75	703	1.547123677729	-0.0019357028183886
+75	716	1.548819677729	-0.0020205028183886
+75	727	1.549011871576	-0.0020205037793579
+75	737	1.549363871576	-0.0020381037793579
+75	755	1.646854586823	-0.0020385912329341
+76	25	0.545523704794	-2.72761852397e-06
+76	39	0.547219704794	-8.752761852397e-05
+76	50	0.547412031825	-8.7528580159125e-05
+76	704	1.547123704794	-9.252713852397e-05
+76	718	1.548819704794	-0.00017732713852397
+76	729	1.549012031825	-0.00017732810015912
+77	26	0.545523778724	-2.72761889362e-06
+77	41	0.547219778724	-8.752761889362e-05
+77	47	0.547411815896	-8.752857907948e-05
+77	56	0.547763815896	-0.00010512857907948
+77	76	0.646534642503	-0.00010562243321251
+77	89	0.648230642503	-0.00019042243321252
+77	97	0.648422822688	-0.00019042339411344
+77	106	0.648774822688	-0.00020802339411344
+77	123	0.654203038952	-0.00020805053519476
+77	132	0.655899038952	-0.00029285053519476
+77	143	0.656091038952	-0.00029381053519476
+77	150	0.656443038952	-0.00032021053519476
+77	173	0.780483038952	-0.00032083073519476
+77	182	0.782179038952	-0.00040563073519476
+77	193	0.782371038952	-0.00040659073519476
+77	200	0.782723038952	-0.00043299073519476
+77	221	0.905163038952	-0.00043360293519476
+77	230	0.906859038952	-0.00051840293519476
+77	243	0.909339038952	-0.00051841533519476
+77	252	0.911035038952	-0.00060321533519476
+77	265	0.913835038952	-0.00060322933519476
+77	274	0.915531038952	-0.00068802933519476
+77	288	0.918651038952	-0.00068804493519476
+77	297	0.920347038952	-0.00077284493519476
+77	319	1.029843038952	-0.00077339241519476
+77	328	1.031539038952	-0.00085819241519476
+77	341	1.033379038952	-0.00085820161519476
+77	350	1.035075038952	-0.00094300161519476
+77	363	1.035955038952	-0.00094300601519476
+77	372	1.037651038952	-0.0010278060151948
+77	385	1.038851038952	-0.0010278120151948
+77	394	1.040547038952	-0.0011126120151948
+77	415	1.155163038952	-0.0011131850951948
+77	424	1.156859038952	-0.0011979850951948
+77	435	1.157051038952	-0.0011989450951948
+77	442	1.157403038952	-0.0012253450951948
+77	463	1.281443038952	-0.0012259652951948
+77	472	1.283139038952	-0.0013107652951948
+77	489	1.28333206713	-0.0013107662603356
+77	512	1.404523038952	-0.0013113722151948
+77	521	1.406219038952	-0.0013961722151948
+77	534	1.407419038952	-0.0013961782151948
+77	543	1.409115038952	-0.0014809782151948
+77	556	1.410315038952	-0.0014809842151948
+77	565	1.412011038952	-0.0015657842151948
+77	578	1.415131038952	-0.0015657998151948
+77	588	1.416827038952	-0.0016505998151948
+77	608	1.531443038952	-0.0016511728951948
+77	617	1.533139038952	-0.0017359728951948
+77	630	1.534659038952	-0.0017359804951948
+77	639	1.536355038952	-0.0018207804951948
+77	652	1.538515038952	-0.0018207912951948
+77	661	1.540211038952	-0.0019055912951948
+77	675	1.543331038952	-0.0019056068951948
+77	688	1.545027038952	-0.0019904068951948
+77	705	1.547123778724	-0.0019904173788936
+77	720	1.548819778724	-0.0020752173788936
+77	726	1.549011815896	-0.0020752183390795
+77	735	1.549363815896	-0.0020928183390795
+77	756	1.646854642503	-0.0020933057932125
+78	29	0.547219344165	1
+78	44	0.547411344165	2
+78	51	0.547763344165	1
+78	51	0.547763344165	0
+78	81	0.648230350957	1
+78	94	0.648422350957	2
+78	101	0.648774350957	1
+78	101	0.648774350957	0
+78	119	0.654010567221	1
+78	120	0.654202567221	2
+78	127	0.655898567221	1
+78	127	0.655898567221	0
+78	169	0.780290567221	1
+78	170	0.780482567221	2
+78	177	0.782178567221	1
+78	177	0.782178567221	0
+78	217	0.904970567221	1
+78	218	0.905162567221	2
+78	225	0.906858567221	1
+78	225	0.906858567221	0
+78	239	0.909146567221	1
+78	240	0.909338567221	2
+78	247	0.911034567221	1
+78	247	0.911034567221	0
+78	261	0.913642567221	1
+78	262	0.913834567221	2
+78	269	0.915530567221	1
+78	269	0.915530567221	0
+78	284	0.918458567221	1
+78	285	0.918650567221	2
+78	292	0.920346567221	1
+78	292	0.920346567221	0
+78	315	1.029650567221	1
+78	316	1.029842567221	2
+78	323	1.031538567221	1
+78	323	1.031538567221	0
+78	337	1.033186567221	1
+78	338	1.033378567221	2
+78	345	1.035074567221	1
+78	345	1.035074567221	0
+78	359	1.035762567221	1
+78	360	1.035954567221	2
+78	367	1.037650567221	1
+78	367	1.037650567221	0
+78	381	1.038658567221	1
+78	382	1.038850567221	2
+78	389	1.040546567221	1
+78	389	1.040546567221	0
+78	411	1.154970567221	1
+78	412	1.155162567221	2
+78	419	1.156858567221	1
+78	419	1.156858567221	0
+78	459	1.281250567221	1
+78	460	1.281442567221	2
+78	467	1.283138567221	1
+78	467	1.283138567221	0
+78	508	1.404330567221	1
+78	509	1.404522567221	2
+78	516	1.406218567221	1
+78	516	1.406218567221	0
+78	530	1.407226567221	1
+78	531	1.407418567221	2
+78	538	1.409114567221	1
+78	538	1.409114567221	0
+78	552	1.410122567221	1
+78	553	1.410314567221	2
+78	560	1.412010567221	1
+78	560	1.412010567221	0
+78	574	1.414938567221	1
+78	575	1.415130567221	2
+78	583	1.416826567221	1
+78	583	1.416826567221	0
+78	604	1.531250567221	1
+78	605	1.531442567221	2
+78	612	1.533138567221	1
+78	612	1.533138567221	0
+78	626	1.534466567221	1
+78	627	1.534658567221	2
+78	634	1.536354567221	1
+78	634	1.536354567221	0
+78	648	1.538322567221	1
+78	649	1.538514567221	2
+78	656	1.540210567221	1
+78	656	1.540210567221	0
+78	670	1.543138567221	1
+78	672	1.543330567221	2
+78	683	1.545026567221	1
+78	683	1.545026567221	0
+78	708	1.548819344165	1
+78	723	1.549011344165	2
+78	730	1.549363344165	1
+78	730	1.549363344165	0
+79	31	0.547219344165	18
+79	83	0.648230350957	18
+79	710	1.548819344165	18
+80	32	0.547219344165	10
+80	84	0.648230350957	10
+80	711	1.548819344165	10
+81	32	0.1	0
+81	32	0.2	0
+81	32	0.3	0
+81	32	0.4	0
+81	32	0.5	0
+81	84	0.6	800
+81	711	0.7	800
+81	711	0.8	0
+81	711	0.9	0
+81	711	1	0
+81	711	1.1	0
+81	711	1.2	0
+81	711	1.3	0
+81	711	1.4	0
+81	711	1.5	0
+82	32	0.547219344165	0.002336166782
+82	84	0.648230350957	0.002336235865
+82	711	1.548819344165	0.003936166782
+83	32	0.547219344165	0
+83	84	0.648230350957	0
+83	711	1.548819344165	1
+84	34	0.547219550319	47
+84	55	0.54776358003	5
+84	131	0.655898803086	47
+84	154	0.656443566363	5
+84	181	0.782178803086	47
+84	204	0.782723566363	5
+84	229	0.906858803086	47
+84	251	0.911034803086	47
+84	273	0.915530803086	47
+84	296	0.920346803086	47
+84	327	1.031538803086	47
+84	349	1.035074803086	47
+84	371	1.037650803086	47
+84	393	1.040546803086	47
+84	423	1.156858803086	47
+84	446	1.157403566363	5
+84	471	1.283138803086	47
+84	494	1.283683566363	5
+84	520	1.406218803086	47
+84	542	1.409114803086	47
+84	564	1.412010803086	47
+84	587	1.416826803086	47
+84	616	1.533138803086	47
+84	638	1.536354803086	47
+84	660	1.540210803086	47
+84	687	1.545026803086	47
+84	713	1.548819550319	47
+84	734	1.54936358003	5
+85	36	0.547219649114	47
+85	61	0.547763945506	5
+85	111	0.648774952298	5
+85	140	0.655899168562	47
+85	190	0.782179168562	47
+85	235	0.906859168562	47
+85	257	0.911035168562	47
+85	279	0.915531168562	47
+85	302	0.920347168562	47
+85	333	1.031539168562	47
+85	355	1.035075168562	47
+85	377	1.037651168562	47
+85	399	1.040547168562	47
+85	432	1.156859168562	47
+85	480	1.283139168562	47
+85	492	1.283683467568	5
+85	526	1.406219168562	47
+85	548	1.409115168562	47
+85	570	1.412011168562	47
+85	593	1.416827168562	47
+85	622	1.533139168562	47
+85	644	1.536355168562	47
+85	666	1.540211168562	47
+85	693	1.545027168562	47
+85	715	1.548819649114	47
+85	740	1.549363945506	5
+86	38	0.547219677729	47
+86	59	0.547763871576	5
+86	88	0.648230586823	47
+86	109	0.648774878368	5
+86	138	0.655899094632	47
+86	188	0.782179094632	47
+86	233	0.906859094632	47
+86	255	0.911035094632	47
+86	277	0.915531094632	47
+86	300	0.920347094632	47
+86	331	1.031539094632	47
+86	353	1.035075094632	47
+86	375	1.037651094632	47
+86	397	1.040547094632	47
+86	430	1.156859094632	47
+86	524	1.406219094632	47
+86	546	1.409115094632	47
+86	568	1.412011094632	47
+86	591	1.416827094632	47
+86	620	1.533139094632	47
+86	642	1.536355094632	47
+86	664	1.540211094632	47
+86	691	1.545027094632	47
+86	717	1.548819677729	47
+86	738	1.549363871576	5
+87	40	0.547219704794	47
+87	719	1.548819704794	47
+88	42	0.547219778724	47
+88	57	0.547763815896	5
+88	90	0.648230642503	47
+88	107	0.648774822688	5
+88	231	0.906859038952	47
+88	253	0.911035038952	47
+88	275	0.915531038952	47
+88	298	0.920347038952	47
+88	329	1.031539038952	47
+88	351	1.035075038952	47
+88	373	1.037651038952	47
+88	395	1.040547038952	47
+88	473	1.283139038952	47
+88	522	1.406219038952	47
+88	544	1.409115038952	47
+88	566	1.412011038952	47
+88	589	1.416827038952	47
+88	618	1.533139038952	47
+88	640	1.536355038952	47
+88	662	1.540211038952	47
+88	689	1.545027038952	47
+88	721	1.548819778724	47
+88	736	1.549363815896	5
+89	65	0.645894115092	10
+89	746	1.645894115092	10
+90	67	0.645894115092	18
+90	747	1.645894115092	18
+91	69	0.645894115092	304
+91	749	1.645894115092	304
+92	69	0.1	0
+92	69	0.2	0
+92	69	0.3	0
+92	69	0.4	0
+92	69	0.5	0
+92	69	0.6	0
+92	749	0.7	3040
+92	749	0.8	0
+92	749	0.9	0
+92	749	1	0
+92	749	1.1	0
+92	749	1.2	0
+92	749	1.3	0
+92	749	1.4	0
+92	749	1.5	0
+92	749	1.6	0
+93	71	0.646342115092	1
+93	72	0.646534115092	2
+93	79	0.648230115092	1
+93	79	0.648230115092	0
+93	751	1.646662115092	1
+93	752	1.646854115092	2
+93	759	1.648550115092	1
+93	759	1.648550115092	0
+94	71	0.646342115092	0.000448
+94	751	1.646662115092	0.000768
+95	71	0.646342115092	304
+95	751	1.646662115092	304
+96	71	0.1	0
+96	71	0.2	0
+96	71	0.3	0
+96	71	0.4	0
+96	71	0.5	0
+96	71	0.6	0
+96	751	0.7	3040
+96	751	0.8	0
+96	751	0.9	0
+96	751	1	0
+96	751	1.1	0
+96	751	1.2	0
+96	751	1.3	0
+96	751	1.4	0
+96	751	1.5	0
+96	751	1.6	0
+97	86	0.648230488028	47
+97	103	0.648774517739	5
+97	129	0.655898734003	47
+97	156	0.656443640293	5
+97	179	0.782178734003	47
+97	206	0.782723640293	5
+97	227	0.906858734003	47
+97	249	0.911034734003	47
+97	271	0.915530734003	47
+97	294	0.920346734003	47
+97	325	1.031538734003	47
+97	347	1.035074734003	47
+97	369	1.037650734003	47
+97	391	1.040546734003	47
+97	421	1.156858734003	47
+97	448	1.157403640293	5
+97	469	1.283138734003	47
+97	496	1.283683594978	5
+97	518	1.406218734003	47
+97	540	1.409114734003	47
+97	562	1.412010734003	47
+97	585	1.416826734003	47
+97	614	1.533138734003	47
+97	636	1.536354734003	47
+97	658	1.540210734003	47
+97	685	1.545026734003	47
+98	113	0.653882567221	10
+98	164	0.778882567221	10
+98	212	0.903882567221	10
+98	310	1.028882567221	10
+98	406	1.153882567221	10
+98	454	1.278882567221	10
+98	503	1.403882567221	10
+98	599	1.528882567221	10
+99	115	0.653882567221	18
+99	165	0.778882567221	18
+99	213	0.903882567221	18
+99	311	1.028882567221	18
+99	407	1.153882567221	18
+99	455	1.278882567221	18
+99	504	1.403882567221	18
+99	600	1.528882567221	18
+100	117	0.653882567221	304
+100	167	0.778882567221	304
+100	215	0.903882567221	304
+100	313	1.028882567221	304
+100	409	1.153882567221	304
+100	457	1.278882567221	304
+100	506	1.403882567221	304
+100	602	1.528882567221	304
+101	117	0.1	0
+101	117	0.2	0
+101	117	0.3	0
+101	117	0.4	0
+101	117	0.5	0
+101	117	0.6	0
+101	167	0.7	3040
+101	215	0.8	3040
+101	215	0.9	0
+101	313	1	3040
+101	409	1.1	3040
+101	457	1.2	3040
+101	506	1.3	3040
+101	506	1.4	0
+101	602	1.5	3040
+102	119	0.654010567221	0.000128
+102	169	0.780290567221	0.001408
+102	217	0.904970567221	0.001088
+102	315	1.029650567221	0.000768
+102	411	1.154970567221	0.001088
+102	459	1.281250567221	0.002368
+102	508	1.404330567221	0.000448
+102	604	1.531250567221	0.002368
+103	119	0.654010567221	304
+103	169	0.780290567221	304
+103	217	0.904970567221	304
+103	315	1.029650567221	304
+103	411	1.154970567221	304
+103	459	1.281250567221	304
+103	508	1.404330567221	304
+103	604	1.531250567221	304
+104	119	0.1	0
+104	119	0.2	0
+104	119	0.3	0
+104	119	0.4	0
+104	119	0.5	0
+104	119	0.6	0
+104	169	0.7	3040
+104	217	0.8	3040
+104	217	0.9	0
+104	315	1	3040
+104	411	1.1	3040
+104	459	1.2	3040
+104	508	1.3	3040
+104	508	1.4	0
+104	604	1.5	3040
+105	133	0.655899038952	1
+105	143	0.656091038952	2
+105	150	0.656443038952	1
+105	150	0.656443038952	0
+105	183	0.782179038952	1
+105	193	0.782371038952	2
+105	200	0.782723038952	1
+105	200	0.782723038952	0
+105	425	1.156859038952	1
+105	435	1.157051038952	2
+105	442	1.157403038952	1
+105	442	1.157403038952	0
+106	135	0.655899038952	18
+106	185	0.782179038952	18
+106	427	1.156859038952	18
+107	136	0.655899038952	10
+107	186	0.782179038952	10
+107	428	1.156859038952	10
+108	136	0.1	0
+108	136	0.2	0
+108	136	0.3	0
+108	136	0.4	0
+108	136	0.5	0
+108	136	0.6	0
+108	186	0.7	800
+108	428	0.8	800
+108	428	0.9	0
+108	428	1	0
+108	428	1.1	0
+109	136	0.655899038952	0.002016471731
+109	186	0.782179038952	0.003296471731
+109	428	1.156859038952	0.002976471731
+110	136	0.655899038952	0
+110	186	0.782179038952	1
+110	428	1.156859038952	4
+111	304	0.920906567221	47
+111	401	1.041106567221	47
+111	595	1.417386567221	47
+111	695	1.545586567221	47
+112	475	1.283139094632	1
+112	483	1.283331094632	2
+112	490	1.283683094632	1
+112	490	1.283683094632	0
+113	477	1.283139094632	18
+114	478	1.283139094632	10
+115	478	0.1	0
+115	478	0.2	0
+115	478	0.3	0
+115	478	0.4	0
+115	478	0.5	0
+115	478	0.6	0
+115	478	0.7	0
+115	478	0.8	0
+115	478	0.9	0
+115	478	1	0
+115	478	1.1	0
+115	478	1.2	0
+116	478	1.283139094632	0.004256527411
+117	478	1.283139094632	5

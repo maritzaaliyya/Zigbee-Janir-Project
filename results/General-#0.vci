@@ -1,0 +1,855 @@
+                                                                
+version 3
+run General-0-20241025-00:10:01-21848
+attr configname General
+attr datetime 20241025-00:10:01
+attr datetimef 20241025-001001
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network ZigbeeNetwork
+attr processid 21848
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config image-path images:../inet-4.5.3/images
+config network ZigbeeNetwork
+config **.arp.typename GlobalArp
+config **.netmaskRoutes "\"\""
+config *.radioMedium.backgroundNoise.power -110dBm
+config *.configurator.config "xmldoc(\"startopology.xml\")"
+config *.configurator.addStaticRoutes false
+config *.sensor2.numApps 1
+config *.sensor2.app[0].typename TemperatureSensorApp
+config *.sensor2.app[0].destAddresses "\"ac\""
+config *.sensor2.app[0].destPort 1001
+config *.ac.numApps 1
+config *.ac.app[0].typename AirConditionerApp
+config *.ac.app[0].localPort 1001
+config *.ac.app[0].destPort 1001
+config *.ac.app[0].messageLength 10Byte
+config *.ac.app[0].sendInterval 1s
+config *.sensor*.numApps 1
+config *.sensor*.app[*].typename UdpBasicApp
+config *.sensor*.app[*].destAddresses "\"controller\""
+config *.sensor*.app[*].destPort 1000
+config *.sensor*.app[*].sendInterval 1s
+config *.sensor*.app[*].startTime uniform(0s,1s)
+config *.sensor*.app[*].messageLength 10Byte
+config *.sensor*.app[*].packetName "\"SensorData\""
+config *.controller.numApps 2
+config *.controller.app[0].typename UdpBasicApp
+config *.controller.app[0].destAddresses "\"lamp1 lamp2 lamp3\""
+config *.controller.app[0].destPort 1000
+config *.controller.app[0].sendInterval 0.125s
+config *.controller.app[0].startTime exponential(1s)
+config *.controller.app[0].messageLength 10Byte
+config *.controller.app[0].packetName "\"ControlData\""
+config *.controller.app[1].typename UdpSink
+config *.controller.app[1].localPort 1000
+config *.lamp*.numApps 1
+config *.lamp*.app[0].typename SmartLamp
+config *.lamp*.app[0].localPort 1000
+config *.visualizer.routingTableVisualizer[0].displayRoutingTables false
+config *.visualizer.routingTableVisualizer[0].displayRoutesIndividually false
+config *.visualizer.routingTableVisualizer[0].lineShift 0
+config *.visualizer.routingTableVisualizer[0].displayLabels false
+config *.visualizer.interfaceTableVisualizer[0].displayInterfaceTables false
+config *.visualizer.numDataLinkVisualizers 2
+config *.visualizer.dataLinkVisualizer[*].displayLinks true
+config *.visualizer.dataLinkVisualizer[0].nodeFilter "\"sensor* or controller\""
+config *.visualizer.dataLinkVisualizer[1].*Color "\"blue\""
+config *.visualizer.dataLinkVisualizer[1].nodeFilter "\"lamp* or controller\""
+config *.visualizer.numStatisticVisualizers 2
+config *.visualizer.statisticVisualizer[*].zIndex 1
+config *.visualizer.statisticVisualizer[0].displayStatistics true
+config *.visualizer.statisticVisualizer[0].signalName "\"packetSent\""
+config *.visualizer.statisticVisualizer[0].statisticExpression "\"count\""
+config *.visualizer.statisticVisualizer[0].sourceFilter "\"**.controller.udp OR **.sensor*.udp\""
+config *.visualizer.statisticVisualizer[0].format "\"sent: %v pks\""
+config *.visualizer.statisticVisualizer[1].displayStatistics true
+config *.visualizer.statisticVisualizer[1].signalName "\"packetReceived\""
+config *.visualizer.statisticVisualizer[1].statisticExpression "\"count\""
+config *.visualizer.statisticVisualizer[1].sourceFilter "\"**.controller.udp OR **.lamp*.udp\""
+config *.visualizer.statisticVisualizer[1].format "\"rcvd: %v pks\""
+
+vector 0 ZigbeeNetwork.ac.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 1 ZigbeeNetwork.ac.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 2 ZigbeeNetwork.ac.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 3 ZigbeeNetwork.ac.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 4 ZigbeeNetwork.ac.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 5 ZigbeeNetwork.sensor1.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 6 ZigbeeNetwork.sensor1.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 7 ZigbeeNetwork.sensor1.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 8 ZigbeeNetwork.sensor1.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 9 ZigbeeNetwork.sensor1.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 10 ZigbeeNetwork.sensor3.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 11 ZigbeeNetwork.sensor3.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 12 ZigbeeNetwork.sensor3.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 13 ZigbeeNetwork.sensor3.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 14 ZigbeeNetwork.sensor3.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 15 ZigbeeNetwork.lamp1.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 16 ZigbeeNetwork.lamp1.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 17 ZigbeeNetwork.lamp1.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 18 ZigbeeNetwork.lamp1.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 19 ZigbeeNetwork.lamp1.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 20 ZigbeeNetwork.lamp2.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 21 ZigbeeNetwork.lamp2.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 22 ZigbeeNetwork.lamp2.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 23 ZigbeeNetwork.lamp2.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 24 ZigbeeNetwork.lamp2.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 25 ZigbeeNetwork.lamp3.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 26 ZigbeeNetwork.lamp3.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 27 ZigbeeNetwork.lamp3.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 28 ZigbeeNetwork.lamp3.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 29 ZigbeeNetwork.lamp3.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 30 ZigbeeNetwork.controller.wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 31 ZigbeeNetwork.controller.wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 32 ZigbeeNetwork.controller.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 33 ZigbeeNetwork.controller.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 34 ZigbeeNetwork.controller.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 35 ZigbeeNetwork.ac.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 36 ZigbeeNetwork.sensor1.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 37 ZigbeeNetwork.sensor3.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 38 ZigbeeNetwork.lamp1.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 39 ZigbeeNetwork.lamp2.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 40 ZigbeeNetwork.lamp3.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 41 ZigbeeNetwork.controller.energyStorage powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 42 ZigbeeNetwork.ac.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 43 ZigbeeNetwork.ac.wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 44 ZigbeeNetwork.sensor1.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 45 ZigbeeNetwork.sensor1.wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 46 ZigbeeNetwork.sensor3.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 47 ZigbeeNetwork.sensor3.wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 48 ZigbeeNetwork.lamp1.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 49 ZigbeeNetwork.lamp1.wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 50 ZigbeeNetwork.lamp2.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 51 ZigbeeNetwork.lamp2.wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 52 ZigbeeNetwork.lamp3.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 53 ZigbeeNetwork.lamp3.wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 54 ZigbeeNetwork.controller.wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 55 ZigbeeNetwork.controller.wlan[0].radio.energyConsumer powerConsumption:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source powerConsumptionChanged
+attr title "Power consumption"
+attr unit W
+vector 56 ZigbeeNetwork.ac.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 57 ZigbeeNetwork.sensor1.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 58 ZigbeeNetwork.sensor3.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 59 ZigbeeNetwork.lamp1.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 60 ZigbeeNetwork.lamp2.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 61 ZigbeeNetwork.lamp3.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 62 ZigbeeNetwork.controller.wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 63 ZigbeeNetwork.sensor1.app[0] packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 64 ZigbeeNetwork.sensor1.udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 65 ZigbeeNetwork.sensor1.wlan[0].queue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 66 ZigbeeNetwork.sensor1.wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 67 ZigbeeNetwork.sensor1.energyStorage residualEnergyCapacity:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source residualEnergyCapacityChanged
+attr title "Residual energy capacity"
+attr unit J
+vector 68 ZigbeeNetwork.sensor1.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 69 ZigbeeNetwork.sensor1.wlan[0].queue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 70 ZigbeeNetwork.sensor1.wlan[0].queue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 71 ZigbeeNetwork.sensor1.wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 72 ZigbeeNetwork.controller.energyStorage residualEnergyCapacity:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source residualEnergyCapacityChanged
+attr title "Residual energy capacity"
+attr unit J
+vector 73 ZigbeeNetwork.sensor3.energyStorage residualEnergyCapacity:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source residualEnergyCapacityChanged
+attr title "Residual energy capacity"
+attr unit J
+vector 74 ZigbeeNetwork.ac.energyStorage residualEnergyCapacity:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source residualEnergyCapacityChanged
+attr title "Residual energy capacity"
+attr unit J
+vector 75 ZigbeeNetwork.lamp3.energyStorage residualEnergyCapacity:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source residualEnergyCapacityChanged
+attr title "Residual energy capacity"
+attr unit J
+vector 76 ZigbeeNetwork.lamp1.energyStorage residualEnergyCapacity:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source residualEnergyCapacityChanged
+attr title "Residual energy capacity"
+attr unit J
+vector 77 ZigbeeNetwork.lamp2.energyStorage residualEnergyCapacity:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source residualEnergyCapacityChanged
+attr title "Residual energy capacity"
+attr unit J
+vector 78 ZigbeeNetwork.controller.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 79 ZigbeeNetwork.controller.udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 80 ZigbeeNetwork.controller.app[1] packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 81 ZigbeeNetwork.controller.app[1] throughput:vector ETV
+attr recordingmode vector
+attr source throughput(packetReceived)
+attr title throughput
+attr unit bps
+vector 82 ZigbeeNetwork.controller.app[1] endToEndDelay:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source dataAge(packetReceived)
+attr title "end-to-end delay"
+attr unit s
+vector 83 ZigbeeNetwork.controller.app[1] rcvdPkSeqNo:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source appPkSeqNo(packetReceived)
+attr title "received packet sequence number"
+vector 84 ZigbeeNetwork.sensor3.wlan[0].mac packetDropNotAddressToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 85 ZigbeeNetwork.ac.wlan[0].mac packetDropNotAddressToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 86 ZigbeeNetwork.lamp3.wlan[0].mac packetDropNotAddressToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 87 ZigbeeNetwork.lamp1.wlan[0].mac packetDropNotAddressToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 88 ZigbeeNetwork.lamp2.wlan[0].mac packetDropNotAddressToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 89 ZigbeeNetwork.sensor3.app[0] packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 90 ZigbeeNetwork.sensor3.udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 91 ZigbeeNetwork.sensor3.wlan[0].queue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 92 ZigbeeNetwork.sensor3.wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 93 ZigbeeNetwork.sensor3.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 94 ZigbeeNetwork.sensor3.wlan[0].queue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 95 ZigbeeNetwork.sensor3.wlan[0].queue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 96 ZigbeeNetwork.sensor3.wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 97 ZigbeeNetwork.sensor1.wlan[0].mac packetDropNotAddressToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 98 ZigbeeNetwork.controller.app[0] packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 99 ZigbeeNetwork.controller.udp packetSent:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSent
+attr title "packets sent, packetBytes"
+vector 100 ZigbeeNetwork.controller.wlan[0].queue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 101 ZigbeeNetwork.controller.wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 102 ZigbeeNetwork.controller.wlan[0].queue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 103 ZigbeeNetwork.controller.wlan[0].queue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 104 ZigbeeNetwork.controller.wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 105 ZigbeeNetwork.lamp2.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 106 ZigbeeNetwork.lamp2.udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 107 ZigbeeNetwork.lamp2.app[0] packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 108 ZigbeeNetwork.lamp2.app[0] throughput:vector ETV
+attr recordingmode vector
+attr source throughput(packetReceived)
+attr title throughput
+attr unit bps
+vector 109 ZigbeeNetwork.lamp2.app[0] endToEndDelay:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source dataAge(packetReceived)
+attr title "end-to-end delay"
+attr unit s
+vector 110 ZigbeeNetwork.lamp2.app[0] rcvdPkSeqNo:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source appPkSeqNo(packetReceived)
+attr title "received packet sequence number"
+vector 111 ZigbeeNetwork.controller.wlan[0].mac packetDropRetryLimitReached:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsRetryLimitReached(packetDropped)
+attr title "packet drop: retry limit reached, packetBytes"
+vector 112 ZigbeeNetwork.lamp3.wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 113 ZigbeeNetwork.lamp3.udp packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 114 ZigbeeNetwork.lamp3.app[0] packetReceived:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceived
+attr title "packets received, packetBytes"
+vector 115 ZigbeeNetwork.lamp3.app[0] throughput:vector ETV
+attr recordingmode vector
+attr source throughput(packetReceived)
+attr title throughput
+attr unit bps
+vector 116 ZigbeeNetwork.lamp3.app[0] endToEndDelay:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source dataAge(packetReceived)
+attr title "end-to-end delay"
+attr unit s
+vector 117 ZigbeeNetwork.lamp3.app[0] rcvdPkSeqNo:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source appPkSeqNo(packetReceived)
+attr title "received packet sequence number"
+0	31367 40 0 0 0 0 5 0 0 0 0
+1	31407 40 0 0 0 0 5 0 0 0 0
+2	31447 8 0 0 0 0 1 0 0 0 0
+3	31455 8 0 0 0 0 1 0 0 0 0
+4	31463 8 0 0 0 0 1 0 0 0 0
+5	31471 130 0 698 0 1.546931177383 9 0 1 2 2
+6	31601 134 0 698 0 1.546931177383 9 0 304 608 184832
+7	31735 8 0 0 0 0 1 0 0 0 0
+8	31743 8 0 0 0 0 1 0 0 0 0
+9	31751 8 0 0 0 0 1 0 0 0 0
+10	31759 139 0 751 0 1.646662115092 9 0 1 2 2
+11	31898 143 0 751 0 1.646662115092 9 0 304 608 184832
+12	32041 9 0 0 0 0 1 0 0 0 0
+13	32050 9 0 0 0 0 1 0 0 0 0
+14	32059 9 0 0 0 0 1 0 0 0 0
+15	32068 45 0 0 0 0 5 0 0 0 0
+16	32113 45 0 0 0 0 5 0 0 0 0
+17	32158 9 0 0 0 0 1 0 0 0 0
+18	32167 9 0 0 0 0 1 0 0 0 0
+19	32176 9 0 0 0 0 1 0 0 0 0
+20	32185 45 0 0 0 0 5 0 0 0 0
+21	32230 45 0 0 0 0 5 0 0 0 0
+22	32275 81 0 427 0 1.156859038952 4 0 3 6 14
+23	32356 9 0 0 0 0 1 0 0 0 0
+24	32365 9 0 0 0 0 1 0 0 0 0
+25	32374 45 0 0 0 0 5 0 0 0 0
+26	32419 45 0 0 0 0 5 0 0 0 0
+27	32464 33 0 477 0 1.283139094632 2 0 1 1 1
+28	32497 9 0 0 0 0 1 0 0 0 0
+29	32506 9 0 0 0 0 1 0 0 0 0
+30	32515 429 0 604 0 1.531250567221 21 0 1 8 8
+31	32944 445 0 604 0 1.531250567221 21 0 304 2432 739328
+32	33389 79 0 710 0 1.548819344165 4 0 3 6 14
+33	33468 9 0 0 0 0 1 0 0 0 0
+34	33477 9 0 0 0 0 1 0 0 0 0
+35	33486 1731 0 757 0 1.646854802752 67 0 0.05 1.30016 0.0650000008
+36	35217 2204 0 754 0 1.646854488028 85 0 0.075 1.625175 0.083875000875
+37	37421 2254 0 759 0 1.648550115092 87 0 0.075 1.63018 0.0839000009
+38	39675 259 0 729 0 1.549012031825 13 0 0.05 0.100025 0.005000000125
+39	39934 2521 0 756 0 1.646854642503 97 0 0.075 1.620185 0.084600000925
+40	42455 1991 0 755 0 1.646854586823 77 0 0.075 1.440165 0.073200000825
+41	44446 6898 0 753 0 1.646854350957 265 0 0.075 2.390385 0.150700001925
+42	51344 27 0 0 0 0 3 0 2 2 4
+43	51371 1722 0 757 0 1.646854802752 66 0 0.05 1.30016 0.0650000008
+44	53093 121 0 706 0 1.548819177383 7 0 3 12 30
+45	53214 2195 0 754 0 1.646854488028 84 0 0.075 1.625175 0.083875000875
+46	55409 121 0 759 0 1.648550115092 7 0 3 12 30
+47	55530 2245 0 759 0 1.648550115092 86 0 0.075 1.63018 0.0839000009
+48	57775 27 0 0 0 0 3 0 2 2 4
+49	57802 250 0 729 0 1.549012031825 12 0 0.05 0.100025 0.005000000125
+50	58052 171 0 442 0 1.157403038952 9 0 3 17 43
+51	58223 2512 0 756 0 1.646854642503 96 0 0.075 1.620185 0.084600000925
+52	60735 75 0 490 0 1.283683094632 5 0 3 7 17
+53	60810 1982 0 755 0 1.646854586823 76 0 0.075 1.440165 0.073200000825
+54	62792 1128 0 730 0 1.549363344165 49 0 3 117 303
+55	63920 6889 0 753 0 1.646854350957 264 0 0.075 2.390385 0.150700001925
+56	70809 1252 0 739 0 1.549363945506 53 1 3 105 261
+57	72061 1466 0 754 0 1.646854488028 62 0 3 118 292
+58	73527 1486 0 759 0 1.648550115092 63 0 3 119 293
+59	75013 103 0 718 0 1.548819704794 5 1 3 9 21
+60	75116 1418 0 756 0 1.646854642503 60 0 3 111 273
+61	76534 1322 0 755 0 1.646854586823 56 0 3 109 271
+62	77856 1466 0 753 0 1.646854350957 62 0 3 55 103
+63	79322 49 13 679 0.544883177383 1.544883177383 2 10 10 20 200
+64	79371 49 15 680 0.544883177383 1.544883177383 2 18 18 36 648
+65	79420 51 17 682 0.544883177383 1.544883177383 2 304 304 608 184832
+66	79471 191 17 682 0.1 1.5 15 0 3040 3040 9241600
+67	79662 2620 19 754 0.545331177383 1.646854488028 63 -0.0021683449924401 -2.726655886915e-06 -0.066658453979997 9.7608409431207e-05
+68	82282 188 19 706 0.545331177383 1.548819177383 8 0 2 8 12
+69	82470 61 19 698 0.545331177383 1.546931177383 2 0.000448 0.002048 0.002496 4.395008e-06
+70	82531 51 19 698 0.545331177383 1.546931177383 2 304 304 608 184832
+71	82582 191 19 698 0.1 1.5 15 0 3040 3040 9241600
+72	82773 3418 21 753 0.545523344165 1.646854350957 81 -0.0029780848317548 -2.727616720825e-06 -0.11682756496425 0.00023346538089239
+73	86191 2704 22 759 0.545523550319 1.648550115092 64 -0.0022531449905755 -2.727617751595e-06 -0.0687705098952 0.00010234088569
+74	88895 2414 23 757 0.545523649114 1.646854802752 57 -0.0019440406740138 -2.72761824557e-06 -0.053295764779434 7.0793272667181e-05
+75	91309 2453 24 755 0.545523677729 1.646854586823 58 -0.0020385912329341 -2.727618388645e-06 -0.058111004148617 8.0895029966637e-05
+76	93762 251 25 729 0.545523704794 1.549012031825 6 -0.00017732810015912 -2.72761852397e-06 -0.00062496619441413 8.678121677854e-08
+77	94013 2537 26 756 0.545523778724 1.646854642503 60 -0.0020933057932125 -2.72761889362e-06 -0.061352284879051 8.741958588569e-05
+78	96550 2202 29 730 0.547219344165 1.549363344165 92 0 2 92 138
+79	98752 73 31 710 0.547219344165 1.548819344165 3 18 18 54 972
+80	98825 73 32 711 0.547219344165 1.548819344165 3 10 10 30 300
+81	98898 191 32 711 0.1 1.5 15 0 800 1600 1280000
+82	99089 109 32 711 0.547219344165 1.548819344165 3 0.002336166782 0.003936166782 0.008608569429 2.6409082185953e-05
+83	99198 70 32 711 0.547219344165 1.548819344165 3 0 1 1 1
+84	99268 690 34 734 0.547219550319 1.54936358003 28 5 47 1064 48748
+85	99958 644 36 740 0.547219649114 1.549363945506 26 5 47 1054 48698
+86	100602 619 38 738 0.547219677729 1.549363871576 25 5 47 1049 48673
+87	101221 49 40 719 0.547219704794 1.548819704794 2 47 47 94 4418
+88	101270 569 42 736 0.547219778724 1.549363815896 23 5 47 955 44255
+89	101839 49 65 746 0.645894115092 1.645894115092 2 10 10 20 200
+90	101888 49 67 747 0.645894115092 1.645894115092 2 18 18 36 648
+91	101937 51 69 749 0.645894115092 1.645894115092 2 304 304 608 184832
+92	101988 203 69 749 0.1 1.6 16 0 3040 3040 9241600
+93	102191 188 71 759 0.646342115092 1.648550115092 8 0 2 8 12
+94	102379 61 71 751 0.646342115092 1.646662115092 2 0.000448 0.000768 0.001216 7.90528e-07
+95	102440 51 71 751 0.646342115092 1.646662115092 2 304 304 608 184832
+96	102491 203 71 751 0.1 1.6 16 0 3040 3040 9241600
+97	102694 644 86 685 0.648230488028 1.545026734003 26 5 47 1012 46514
+98	103338 200 113 599 0.653882567221 1.528882567221 8 10 10 80 800
+99	103538 200 115 600 0.653882567221 1.528882567221 8 18 18 144 2592
+100	103738 216 117 602 0.653882567221 1.528882567221 8 304 304 2432 739328
+101	103954 229 117 602 0.1 1.5 15 0 3040 21280 64691200
+102	104183 256 119 604 0.654010567221 1.531250567221 8 0.000128 0.002368 0.009664 1.6371712e-05
+103	104439 216 119 604 0.654010567221 1.531250567221 8 304 304 2432 739328
+104	104655 229 119 604 0.1 1.5 15 0 3040 21280 64691200
+105	104884 300 133 442 0.655899038952 1.157403038952 12 0 2 12 18
+106	105184 78 135 427 0.655899038952 1.156859038952 3 18 18 54 972
+107	105262 78 136 428 0.655899038952 1.156859038952 3 10 10 30 300
+108	105340 156 136 428 0.1 1.1 11 0 800 1600 1280000
+109	105496 114 136 428 0.655899038952 1.156859038952 3 0.002016471731 0.003296471731 0.008289415193 2.3792268080646e-05
+110	105610 75 136 428 0.655899038952 1.156859038952 3 0 4 5 17
+111	105685 104 304 695 0.920906567221 1.545586567221 4 47 47 188 8836
+112	105789 100 475 490 1.283139094632 1.283683094632 4 0 2 4 6
+113	105889 26 477 477 1.283139094632 1.283139094632 1 18 18 18 324
+114	105915 26 478 478 1.283139094632 1.283139094632 1 10 10 10 100
+115	105941 166 478 478 0.1 1.2 12 0 0 0 0
+116	106107 38 478 478 1.283139094632 1.283139094632 1 0.004256527411 0.004256527411 0.004256527411 1.8118025600594e-05
+117	106145 25 478 478 1.283139094632 1.283139094632 1 5 5 5 25
